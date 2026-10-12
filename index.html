@@ -1,0 +1,72 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#263D63">
+<title>PrimeTask | Online Tasks</title>
+<style>
+*{box-sizing:border-box}
+:root{--navy:#263D63;--ice:#EAF0F7;--white:#fff;--blue:#A8BDD8;--muted:#728096}
+body{margin:0;background:#F4F7FB;color:var(--navy);font-family:Arial,sans-serif}
+header{background:var(--white);padding:20px;border-bottom:1px solid #e4eaf2}
+.brand{font-size:25px;font-weight:800}.brand span{color:#718FB8}
+header p{font-size:13px;color:var(--muted)}
+main{max-width:850px;margin:auto;padding:18px}
+h2{font-size:19px;margin:25px 0 13px}
+.hero{background:linear-gradient(145deg,#fff,#EAF0F7);padding:23px;border-radius:22px;box-shadow:0 6px 25px #263D6310}
+.label{font-size:13px;color:var(--muted)}
+.amount{font-size:36px;font-weight:800;margin:12px 0}
+.actions,.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.actions{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:20px}
+button,select,input{font:inherit}
+.action{background:white;border:1px solid #edf0f5;border-radius:13px;padding:12px 3px;color:var(--navy);font-size:11px}
+.action b{display:block;font-size:21px;margin-bottom:6px}
+.card{background:white;padding:16px;border-radius:17px;border:1px solid #e9edf4;box-shadow:0 4px 14px #263D6308}
+.card h3{font-size:16px}.card p{font-size:13px;color:var(--muted);line-height:1.5}
+.reward{font-size:23px;font-weight:bold;margin:12px 0}
+.btn{background:var(--navy);color:white;border:0;border-radius:10px;padding:12px;width:100%;font-weight:bold}
+select,input{padding:12px;border:1px solid #dce4ef;border-radius:10px;width:100%;margin:8px 0;background:white;color:var(--navy)}
+nav{position:sticky;bottom:0;background:white;border-top:1px solid #e6eaf0;display:flex;justify-content:space-around;padding:12px 2px}
+nav button{background:white;border:0;color:var(--navy);font-size:11px}
+nav b{display:block;font-size:19px;margin-bottom:4px}
+.note{font-size:12px;color:var(--muted);line-height:1.6}
+.hidden{display:none}
+@media(min-width:650px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}main{padding:28px}}
+</style>
+</head>
+<body>
+<header><div class="brand">Prime<span>Task</span></div><p>Discover tasks. Build skills. Earn rewards.</p></header>
+<main>
+<section id="home">
+<div class="hero"><div class="label">Available balance · USD</div><div class="amount">$0.00</div><span class="label">Your verified rewards</span>
+<div class="actions">
+<button class="action" onclick="go('tasks')"><b>⌕</b>Find Tasks</button>
+<button class="action" onclick="go('wallet')"><b>▣</b>Wallet</button>
+<button class="action" onclick="go('wallet')"><b>↗</b>Withdraw</button>
+<button class="action" onclick="go('referrals')"><b>♧</b>Referrals</button>
+</div></div>
+<h2>Account setup</h2><div class="card"><p>Select your country to see the intended launch market.</p>
+<select id="country"><option value="">Choose your country</option><option>South Africa</option><option>Kenya</option><option>Tanzania</option><option>Uganda</option></select>
+<button class="btn" onclick="saveCountry()">Save country</button><p id="countryMsg" class="note"></p></div>
+<h2>Membership plans</h2><div class="cards">
+<div class="card"><h3>Basic</h3><div class="reward">$2</div><p>Proposed one-time fee. Standard eligible tasks and dashboard.</p><button class="btn" onclick="paymentInfo()">Choose Basic</button></div>
+<div class="card"><h3>Pro</h3><div class="reward">$8</div><p>Proposed one-time fee. Additional features and eligible tasks when available.</p><button class="btn" onclick="paymentInfo()">Choose Pro</button></div></div>
+</section>
+<section id="tasks" class="hidden"><h2>Task marketplace</h2><p class="note">Illustrative examples only. These are not live paid tasks.</p><div class="cards">
+<div class="card"><h3>Survey</h3><p>Example listing · eligibility required</p><div class="reward">$0.50</div><button class="btn" onclick="demo()">View task</button></div>
+<div class="card"><h3>AI training</h3><p>Example listing · provider not connected</p><div class="reward">$1.20</div><button class="btn" onclick="demo()">View task</button></div>
+<div class="card"><h3>Product feedback</h3><p>Example listing · not yet available</p><div class="reward">$0.80</div><button class="btn" onclick="demo()">View task</button></div>
+</div></section>
+<section id="wallet" class="hidden"><h2>My wallet</h2><div class="card"><div class="label">Available balance</div><div class="amount">$0.00</div><p>Only verified rewards can be withdrawn. Secure payments are not yet connected.</p><button class="btn" onclick="alert('Withdrawal requests will be enabled after account and payment integration.')">Request withdrawal</button></div><h2>Transactions</h2><div class="card"><p>No verified transactions yet.</p></div></section>
+<section id="referrals" class="hidden"><h2>Referrals</h2><div class="card"><p>Referral tracking will be available after secure accounts are connected.</p></div></section>
+<section id="profile" class="hidden"><h2>My profile</h2><div class="card"><p>Registration and secure login must be connected before launch.</p><button class="btn" onclick="alert('Secure registration is not yet configured.')">Register / Login</button></div></section>
+</main>
+<nav><button onclick="go('home')"><b>⌂</b>Home</button><button onclick="go('tasks')"><b>▤</b>Tasks</button><button onclick="go('wallet')"><b>▣</b>Wallet</button><button onclick="go('referrals')"><b>♧</b>Referrals</button><button onclick="go('profile')"><b>●</b>Profile</button></nav>
+<script>
+function go(id){document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');window.scrollTo(0,0)}
+function saveCountry(){let c=document.getElementById('country').value;document.getElementById('countryMsg').textContent=c?'Selected country: '+c+'. This choice is stored only on this page until a backend is connected.':'Please choose a country.'}
+function paymentInfo(){alert('Membership price shown for planning only. Payments are not configured, so no money will be collected or membership activated.')}
+function demo(){alert('Example only. No advertiser is connected and no reward will be credited.')}
+</script>
+</body>
+                        </html>
