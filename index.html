@@ -649,3 +649,130 @@ db.auth.onAuthStateChange((_event, session) => {
     const email = $("pt-email").value.trim();
     const password = $("pt-password").value;
   
+    const name = $("pt-name").value.trim();
+
+    if (!email || !password) {
+      authMessage("Enter your email and password.");
+      return;
+    }
+
+    try {
+      authMessage("Creating account...");
+      const { data, error } = await db.auth.signUp({
+        email,
+        password,
+        options: { data: { display_name: name } }
+      });
+
+      if (error) throw error;
+
+      if (data.session) {
+        updateAuthUI(data.user);
+      } else {
+        authMessage("Registration submitted. Check your email if confirmation is required.");
+      }
+    } catch (error) {
+      authMessage("Registration failed: " + error.message);
+    }
+  });
+
+  $("pt-login").addEventListener("click", async () => {
+    if (!db) {
+      authMessage("Supabase is still connecting. Please wait and try again.");
+      return;
+    }
+
+    const email = $("pt-email").value.trim();
+    const password = $("pt-password").value;
+
+    if (!email || !password) {
+      authMessage("Enter your email and password.");
+      return;
+    }
+
+    try {
+      authMessage("Logging in...");
+      const { data, error } = await db.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) throw error;
+
+      updateAuthUI(data.user);
+      refreshWallet();
+    } catch (error) {
+      authMessage("Login failed: " + error.message);
+    }
+  });
+
+  $("pt-reset").addEventListener("click", async () => {
+    if (!db) {
+      authMessage("Supabase is still connecting. Please wait and try again.");
+      return;
+    }
+
+    const email = $("pt-email").value.trim();
+
+    if (!email) {
+      authMessage("Enter your email first.");
+      return;
+    }
+
+    try {
+      authMessage("Requesting password recovery...");
+      const { error } = await db.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.href.split("#")[0]
+      });
+
+      if (error) throw error;
+
+      authMessage("Recovery request sent if the account exists. Check your inbox and Spam folder.");
+    } catch (error) {
+      authMessage("Recovery request failed: " + error.message);
+    }
+  });
+
+  $("pt-logout").addEventListener("click", async () => {
+    if (!db) return;
+
+    const { error } = await db.auth.signOut();
+
+    if (error) {
+      authMessage("Logout failed: " + error.message);
+      return;
+    }
+
+    updateAuthUI(null);
+  });
+
+  $("pt-save-profile").addEventListener("click", async () => {
+    if (!db || !currentUser) {
+      $("pt-profile-message").textContent = "Please log in first.";
+      return;
+    }
+
+    try {
+      const { error } = await db.auth.updateUser({
+        data: {
+          display_name: $("pt-profile-name").value.trim(),
+          country: $("pt-profile-country").value
+        }
+      });
+
+      if (error) throw error;
+
+      $("pt-profile-message").textContent = "Profile preferences saved.";
+    } catch (error) {
+      $("pt-profile-message").textContent =
+        "Could not save profile: " + error.message;
+    }
+  });
+
+  start().catch(error => {
+    authMessage("Supabase startup failed: " + error.message);
+  });
+})();
+  </script>
+</body>
+</html>
