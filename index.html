@@ -662,6 +662,7 @@ db.auth.onAuthStateChange((_event, session) => {
     }
   });
 
+  
   $("pt-reset").addEventListener("click", async () => {
     if (!db) return authMessage("Supabase is not ready yet.");
 
@@ -669,14 +670,18 @@ db.auth.onAuthStateChange((_event, session) => {
     if (!email) return authMessage("Enter your email first.");
 
     try {
-      const {error} = await db.auth.resetPasswordForEmail(email, {
-        redirectTo:"https://creditrestorationprime25-cell.github.io/primetask/"
+      const { error } = await db.auth.resetPasswordForEmail(email, {
+        redirectTo: "https://creditrestorationprime25-cell.github.io/primetask/"
       });
+
       if (error) throw error;
+
       authMessage("If the account exists, a password reset email will be sent.");
     } catch (error) {
       authMessage("Password reset failed: " + error.message);
-  }
-});
-start();
+    }
+  });
+
+  start();
 })();
+  
