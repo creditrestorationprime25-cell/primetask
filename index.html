@@ -1,204 +1,667 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#172D50">
-<title>PrimeTask</title>
+<title>PrimeTask | Earn Through Tasks</title>
+
 <style>
-:root{--ice:#DCE6F2;--white:#F7F9FC;--navy:#172D50;--soft:#8FB9E8;--muted:#687991;--line:#DCE6F2}
-*{box-sizing:border-box}
-body{margin:0;background:var(--white);color:var(--navy);font:15px/1.5 system-ui,Arial}
-.layout{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
-.side{background:#fff;border-right:1px solid var(--line);padding:24px 16px}
-.brand{font-size:21px;font-weight:850;color:var(--navy);margin:5px 8px 30px}
-.logo{display:inline-grid;place-items:center;background:var(--navy);color:#fff;width:34px;height:34px;border-radius:11px;margin-right:8px}
-.nav{display:grid;gap:6px}
-.nav button,.mobile button{border:0;background:transparent;text-align:left;padding:12px;border-radius:12px;color:var(--muted);cursor:pointer}
-.nav button.active,.nav button:hover{background:var(--ice);color:var(--navy);font-weight:750}
-.main{padding:28px clamp(15px,4vw,48px);max-width:1400px;width:100%;margin:auto}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}
-.muted{color:var(--muted);font-size:13px}
-.h1{font-size:30px;color:var(--navy);margin:2px 0}
-.hero{display:grid;grid-template-columns:1.5fr 1fr;gap:20px;align-items:center;background:linear-gradient(120deg,var(--ice),var(--white));border:1px solid var(--line);border-radius:24px;padding:28px}
-.hero h2{font-size:34px;line-height:1.15;color:var(--navy);margin:12px 0}
-.hero p{color:var(--muted);max-width:500px}
-.tag{display:inline-block;background:#E8F1FB;color:var(--navy);padding:5px 9px;border-radius:99px;font-size:11px;font-weight:750}
-.btn{background:var(--navy);color:#fff;border:0;border-radius:11px;padding:11px 15px;font-weight:750;cursor:pointer}
-.btn.light{background:#fff;color:var(--navy);border:1px solid var(--line)}
-.balance-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 12px 30px #172D5012}
-.amount{font-size:32px;font-weight:850;color:var(--navy)}
-.stats,.cards,.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:18px 0 28px}
-.stat,.task,.plan{background:#fff;border:1px solid var(--line);border-radius:17px;padding:18px}
-.stat strong{display:block;font-size:25px;color:var(--navy);margin:10px 0 2px}
-.section{margin:26px 0}
-.section h2{color:var(--navy);font-size:20px}
-.task{display:flex;flex-direction:column;min-height:190px}
-.task h3{color:var(--navy);margin:12px 0 4px}
-.task p{color:var(--muted);font-size:13px}
-.task .btn{margin-top:auto;align-self:flex-start}
-.icon{background:var(--ice);color:var(--navy);width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:20px}
-.notice{background:#fff;border:1px solid var(--line);padding:14px;border-radius:14px;color:#667790;font-size:13px;margin:20px 0}
-.panel{display:none}
-.panel.active{display:block}
-.plans{grid-template-columns:repeat(2,minmax(0,1fr))}
-.plan.feature{background:var(--navy);color:#fff}
-.plan h3{margin:0}
-.price{font-size:29px;font-weight:850;color:var(--navy);margin:12px 0}
-.feature .price{color:#fff}
-.plan li{font-size:13px;line-height:1.9}
-.empty{background:#fff;border:1px dashed var(--line);padding:30px;border-radius:18px;text-align:center;color:var(--muted)}
-.field{display:grid;gap:6px;margin:12px 0}
-.field input,.field select{padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;width:100%}
-.mobile{display:none}
-.foot{text-align:center;color:#8a97a8;font-size:12px;margin:28px 0}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--soft);outline-offset:2px}
-@media(max-width:780px){
-.layout{display:block}.side{display:none}.main{padding:20px 14px 88px}
-.hero{grid-template-columns:1fr;padding:22px}.balance-card{display:none}
-.stats{gap:8px}.stat{padding:12px}.stat strong{font-size:21px}
-.cards{grid-template-columns:1fr}.task{min-height:0}.plans{grid-template-columns:1fr}
-.mobile{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);justify-content:space-around;padding:6px 2px calc(6px + env(safe-area-inset-bottom));z-index:2}
-.mobile button{text-align:center;padding:7px 4px;font-size:10px}
-.top .country{display:none}.h1{font-size:25px}.hero h2{font-size:29px}
+:root {
+  --navy:#172D50;
+  --blue:#356AE6;
+  --cream:#F7F9FC;
+  --white:#FFFFFF;
+  --soft:#E8EEF9;
+  --muted:#687991;
+  --line:#DCE6F2;
+  --green:#16845B;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0;
+  background:var(--cream);
+  color:var(--navy);
+  font:15px/1.5 system-ui,-apple-system,Arial,sans-serif;
+}
+button,input,select { font:inherit; }
+button { cursor:pointer; }
+button:focus-visible,input:focus-visible,select:focus-visible {
+  outline:3px solid #8AB9FF;
+  outline-offset:2px;
+}
+.layout {
+  display:grid;
+  grid-template-columns:225px minmax(0,1fr);
+  min-height:100vh;
+}
+.side {
+  background:white;
+  border-right:1px solid var(--line);
+  padding:24px 16px;
+}
+.brand {
+  font-size:22px;
+  font-weight:850;
+  margin:0 0 28px;
+}
+.logo {
+  display:inline-grid;
+  place-items:center;
+  width:34px;
+  height:34px;
+  border-radius:11px;
+  background:var(--navy);
+  color:white;
+  margin-right:8px;
+}
+.nav { display:grid; gap:7px; }
+.nav button,.mobile button {
+  border:0;
+  border-radius:11px;
+  padding:12px;
+  text-align:left;
+  background:transparent;
+  color:var(--muted);
+  font-weight:650;
+}
+.nav button.active,.nav button:hover,
+.mobile button.active {
+  background:var(--soft);
+  color:var(--navy);
+}
+.notice {
+  background:#EEF4FF;
+  color:#405778;
+  border-radius:12px;
+  padding:12px;
+  font-size:12px;
+  margin-top:22px;
+}
+.main { padding:24px; min-width:0; }
+.top {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  margin-bottom:22px;
+}
+.muted { color:var(--muted); }
+h1 { font-size:29px; line-height:1.2; margin:4px 0; }
+h2 { font-size:20px; margin:0 0 12px; }
+h3 { margin:0 0 7px; }
+.panel {
+  display:none;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:22px;
+  margin-bottom:18px;
+}
+.panel.active { display:block; }
+.hero {
+  background:linear-gradient(120deg,#EAF1FF,#FFFFFF);
+  border:1px solid var(--line);
+  border-radius:22px;
+  padding:26px;
+  margin-bottom:18px;
+}
+.hero p { max-width:600px; color:var(--muted); }
+.stats {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  margin:18px 0;
+}
+.stat {
+  background:white;
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:16px;
+  min-width:0;
+}
+.stat strong {
+  display:block;
+  font-size:23px;
+  margin-top:5px;
+  overflow-wrap:anywhere;
+}
+.cards {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+.task,.plan {
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:17px;
+  min-width:0;
+}
+.tag {
+  display:inline-block;
+  background:var(--soft);
+  color:var(--navy);
+  padding:4px 9px;
+  border-radius:20px;
+  font-size:11px;
+  font-weight:750;
+}
+.btn {
+  background:var(--navy);
+  color:white;
+  border:0;
+  border-radius:10px;
+  padding:11px 15px;
+  font-weight:700;
+}
+.btn.light {
+  background:var(--soft);
+  color:var(--navy);
+}
+.btn:disabled { opacity:.55; cursor:not-allowed; }
+.field { margin:12px 0; }
+.field label { display:block; font-weight:650; margin-bottom:5px; }
+.field input,.field select {
+  display:block;
+  width:100%;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:white;
+  color:var(--navy);
+}
+.account {
+  max-width:620px;
+  margin:0 auto 20px;
+  background:white;
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:20px;
+}
+.message {
+  margin:12px 0;
+  padding:10px;
+  background:#EEF4FF;
+  border-radius:9px;
+  overflow-wrap:anywhere;
+}
+.empty {
+  padding:20px;
+  border:1px dashed var(--line);
+  border-radius:12px;
+  color:var(--muted);
+  text-align:center;
+}
+.mobile { display:none; }
+footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
+@media(max-width:780px) {
+  .layout { display:block; }
+  .side { display:none; }
+  .main { padding:18px 14px 90px; }
+  .cards { grid-template-columns:1fr; }
+  .stats { gap:8px; }
+  .stat { padding:11px; }
+  .stat strong { font-size:19px; }
+  .hero { padding:20px; }
+  h1 { font-size:25px; }
+  .mobile {
+    display:flex;
+    position:fixed;
+    z-index:5;
+    bottom:0;
+    left:0;
+    right:0;
+    background:white;
+    border-top:1px solid var(--line);
+    justify-content:space-around;
+    padding:7px 3px calc(7px + env(safe-area-inset-bottom));
+  }
+  .mobile button {
+    padding:8px 5px;
+    text-align:center;
+    font-size:11px;
+  }
 }
 </style>
 </head>
+
 <body>
 <div class="layout">
-<aside class="side">
-<div class="brand"><span class="logo">P</span>PrimeTask</div>
-<nav class="nav">
-<button class="active" data-page="home">⌂ &nbsp; Overview</button>
-<button data-page="tasks">▦ &nbsp; Find tasks</button>
-<button data-page="wallet">▤ &nbsp; Wallet</button>
-<button data-page="referrals">♧ &nbsp; Referrals</button>
-<button data-page="membership">◇ &nbsp; Membership</button>
-<button data-page="profile">⚙ &nbsp; Profile</button>
+  <aside class="side">
+    <div class="brand"><span class="logo">P</span>PrimeTask</div>
+    <nav class="nav">
+      <button class="active" data-page="home">Overview</button>
+      <button data-page="tasks">Find tasks</button>
+      <button data-page="wallet">Wallet</button>
+      <button data-page="referrals">Referrals</button>
+      <button data-page="membership">Membership</button>
+      <button data-page="profile">Your profile</button>
+    </nav>
+    <div class="notice">
+      Work at your pace. Rewards are added only after a provider verifies completion.
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="top">
+      <div>
+        <div class="muted">PRIMETASK WORKSPACE</div>
+        <h1 id="page-title">Welcome to PrimeTask</h1>
+      </div>
+      <button class="btn light" id="account-toggle">Account</button>
+    </header>
+
+    <section class="account" id="account-panel">
+      <h2>PrimeTask Account</h2>
+      <p class="muted">Register or log in to access your account and wallet.</p>
+      <div id="auth-message" class="message" role="status" aria-live="polite">
+        Checking account status…
+      </div>
+      <div id="auth-fields">
+        <div class="field">
+          <label for="pt-email">Email</label>
+          <input id="pt-email" type="email" autocomplete="email" placeholder="Your email">
+        </div>
+        <div class="field">
+          <label for="pt-password">Password</label>
+          <input id="pt-password" type="password" autocomplete="current-password" placeholder="Password">
+        </div>
+        <div class="field">
+          <label for="pt-name">Display name (for new accounts)</label>
+          <input id="pt-name" autocomplete="name" placeholder="Your display name">
+        </div>
+        <button class="btn" id="pt-register">Create account</button>
+        <button class="btn light" id="pt-login">Log in</button>
+        <button class="btn light" id="pt-reset">Forgot password</button>
+      </div>
+      <button class="btn light" id="pt-logout" hidden>Log out</button>
+      <button class="btn" id="pt-offerwall" hidden>Open task provider</button>
+    </section>
+
+    <section class="panel active" id="home">
+      <div class="hero">
+        <span class="tag">YOUR NEXT OPPORTUNITY</span>
+        <h2>Small tasks. Steady progress.</h2>
+        <p>Explore surveys, feedback and online task opportunities. Rewards are only added after a provider confirms completion.</p>
+        <button class="btn" data-go="tasks">Explore tasks</button>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <span class="muted">Available balance</span>
+          <strong id="pt-home-balance">$0.00</strong>
+        </div>
+        <div class="stat">
+          <span class="muted">Tasks completed</span>
+          <strong>0</strong>
+        </div>
+        <div class="stat">
+          <span class="muted">Pending rewards</span>
+          <strong>$0.00</strong>
+        </div>
+      </div>
+      <div class="panel active">
+        <h2>Recommended opportunities</h2>
+        <p class="muted">These are examples, not live paid offers. Real opportunities appear after a verified provider is connected.</p>
+        <div class="cards">
+          <article class="task">
+            <h3>Paid surveys</h3>
+            <p class="muted">Share opinions through eligible survey providers.</p>
+            <span class="tag">Provider needed</span>
+          </article>
+          <article class="task">
+            <h3>AI training</h3>
+            <p class="muted">Help improve digital products when work is available.</p>
+            <span class="tag">Provider needed</span>
+          </article>
+          <article class="task">
+            <h3>Product feedback</h3>
+            <p class="muted">Review products or services when eligible studies appear.</p>
+            <span class="tag">Provider needed</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel" id="tasks">
+      <h2>Find tasks</h2>
+      <p class="muted">Choose your country and browse categories. Availability and rewards depend on your profile and country.</p>
+      <div class="field">
+        <label for="pt-country">Country</label>
+        <select id="pt-country">
+          <option value="">Choose country</option>
+          <option>Kenya</option>
+          <option>South Africa</option>
+          <option>Tanzania</option>
+          <option>Uganda</option>
+          <option>United States</option>
+          <option>Canada</option>
+          <option>United Kingdom</option>
+        </select>
+      </div>
+      <div class="cards">
+        <article class="task">
+          <h3>Paid surveys</h3>
+          <p class="muted">Provider-supplied surveys. Eligibility and rewards vary.</p>
+          <span class="tag">Integration needed</span>
+        </article>
+        <article class="task">
+          <h3>AI training</h3>
+          <p class="muted">Data labeling and evaluation tasks when legitimate work is available.</p>
+          <span class="tag">Integration needed</span>
+        </article>
+        <article class="task">
+          <h3>Product feedback</h3>
+          <p class="muted">Feedback and research tasks subject to provider rules.</p>
+          <span class="tag">Integration needed</span>
+        </article>
+      </div>
+      <p class="notice">Real tasks will appear after secure provider integration and server-side reward verification.</p>
+    </section>
+
+    <section class="panel" id="wallet">
+      <h2>Your wallet</h2>
+      <div class="stats">
+        <div class="stat">
+          Available balance
+          <strong id="pt-wallet-balance">$0.00</strong>
+        </div>
+        <div class="stat">
+          Pending withdrawals
+          <strong>$0.00</strong>
+        </div>
+        <div class="stat">
+          Lifetime verified
+          <strong>$0.00</strong>
+        </div>
+      </div>
+      <div class="empty" id="pt-wallet-history">
+        Log in to load your wallet balance.
+        <p>Transactions will appear here after verified rewards are recorded.</p>
+      </div>
+      <div class="notice">
+        M-Pesa and bank payouts require a secure backend and a configured payout provider. This page does not send money.
+      </div>
+      <button class="btn light" id="pt-refresh-wallet">Refresh balance</button>
+    </section>
+
+    <section class="panel" id="referrals">
+      <h2>Refer friends</h2>
+      <p class="muted">Invite friends after the referral system has been configured.</p>
+      <div class="empty">Your referral link is not activated yet.</div>
+    </section>
+
+    <section class="panel" id="membership">
+      <h2>Membership plans</h2>
+      <p class="muted">Proposed prices only; checkout is not active.</p>
+      <div class="cards">
+        <article class="plan">
+          <h3>Basic</h3>
+          <p>For members getting started.</p>
+          <div class="stat"><strong>$0</strong> per month</div>
+          <p class="muted">No paid features are activated.</p>
+        </article>
+        <article class="plan">
+          <h3>Pro</h3>
+          <p>For members who want more tools.</p>
+          <div class="stat"><strong>$5</strong> per month</div>
+          <p class="muted">Payment and benefits are not configured.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="profile">
+      <h2>Your profile</h2>
+      <div class="field">
+        <label for="pt-profile-name">Display name</label>
+        <input id="pt-profile-name" placeholder="Your display name">
+      </div>
+      <div class="field">
+        <label for="pt-profile-country">Country</label>
+        <select id="pt-profile-country">
+          <option value="">Choose country</option>
+          <option>Kenya</option>
+          <option>South Africa</option>
+          <option>Tanzania</option>
+          <option>Uganda</option>
+          <option>United States</option>
+          <option>Canada</option>
+          <option>United Kingdom</option>
+        </select>
+      </div>
+      <button class="btn" id="pt-save-profile">Save preferences</button>
+      <p class="muted" id="pt-profile-message"></p>
+    </section>
+
+    <footer>
+      PrimeTask · Opportunities depend on eligibility and provider availability.
+      Never pay anyone who promises guaranteed earnings.
+    </footer>
+  </main>
+</div>
+
+<nav class="mobile">
+  <button class="active" data-page="home">Home</button>
+  <button data-page="tasks">Tasks</button>
+  <button data-page="wallet">Wallet</button>
+  <button data-page="referrals">Referrals</button>
+  <button data-page="profile">Profile</button>
 </nav>
-<div class="notice">Work at your pace. Rewards are shown only after a provider verifies completion.</div>
-</aside>
-<main class="main">
-<header class="top"><div><div class="muted">PRIMETASK WORKSPACE</div><h1 class="h1" id="title">Welcome to PrimeTask</h1></div><span class="tag country" id="countryLabel">Choose country</span></header>
-<section class="panel active" id="home">
-<div class="hero"><div><span class="tag">YOUR NEXT OPPORTUNITY</span><h2>Small tasks.<br>Progress at your pace.</h2><p>Explore surveys, feedback and online task opportunities. Rewards are only added after a provider confirms completion.</p><button class="btn" data-go="tasks">Explore tasks →</button></div>
-<div class="balance-card"><div class="muted">Available balance</div><div class="amount">$0.00</div><div style="height:7px;background:#e8eef5;border-radius:9px;margin:12px 0"><div style="width:15%;height:7px;background:var(--soft);border-radius:9px"></div></div><div class="muted">PrimeTask wallet · Verified rewards only</div></div></div>
-<div class="stats">
-<div class="stat"><span class="muted">Available balance</span><strong>$0.00</strong><span class="muted">Verified rewards only</span></div>
-<div class="stat"><span class="muted">Tasks completed</span><strong>0</strong><span class="muted">Provider-confirmed</span></div>
-<div class="stat"><span class="muted">Pending review</span><strong>0</strong><span class="muted">Awaiting verification</span></div>
-</div>
-<div class="section"><h2>Recommended opportunities</h2><p class="muted">Categories shown as previews until a live provider is connected.</p><div class="cards">
-<article class="task"><div class="icon">▤</div><h3>Paid surveys</h3><p>Share opinions through eligible survey providers.</p><button class="btn light" data-go="tasks">Explore</button></article>
-<article class="task"><div class="icon">✳</div><h3>AI training</h3><p>Help improve digital products when work is available.</p><button class="btn light" data-go="tasks">Explore</button></article>
-<article class="task"><div class="icon">◈</div><h3>Product feedback</h3><p>Review products or services when eligible studies appear.</p><button class="btn light" data-go="tasks">Explore</button></article>
-</div></div>
-<div class="notice">This starter does not yet connect to a live task provider or payout service. No earnings are simulated.</div>
-</section>
-<section class="panel" id="tasks">
-<h2>Find tasks</h2><p class="muted">Choose your country and browse categories.</p>
-<div class="field"><label for="country">Country</label><select id="country"><option value="">Choose country</option><option>Kenya</option><option>South Africa</option><option>Tanzania</option><option>Uganda</option></select></div>
-<div class="cards">
-<article class="task"><div class="icon">▤</div><h3>Paid surveys</h3><p>Provider-supplied surveys. Availability and rewards depend on your profile and country.</p><span class="tag">Integration needed</span><p><button class="btn" data-detail="Paid surveys">Details</button></p></article>
-<article class="task"><div class="icon">✳</div><h3>AI training</h3><p>Data labeling and evaluation tasks when a legitimate work provider is connected.</p><span class="tag">Integration needed</span><p><button class="btn" data-detail="AI training">Details</button></p></article>
-<article class="task"><div class="icon">◈</div><h3>Product feedback</h3><p>Feedback and research tasks subject to provider rules and review.</p><span class="tag">Integration needed</span><p><button class="btn" data-detail="Product feedback">Details</button></p></article>
-</div>
-<div class="notice">Real tasks will appear here after secure provider integration and server-side conversion verification.</div>
-</section>
-<section class="panel" id="wallet"><h2>Your wallet</h2><div class="stats"><div class="stat">Available balance<strong>$0.00</strong></div><div class="stat">Pending withdrawals<strong>$0.00</strong></div><div class="stat">Lifetime verified<strong>$0.00</strong></div></div><div class="empty">No wallet transactions yet.<p>Provider events must be verified on the server before a balance can change.</p></div><div class="notice">M-Pesa/bank payouts require a secure backend and a configured payout provider. This page does not send money.</div></section>
-<section class="panel" id="referrals"><h2>Refer friends</h2><div class="empty"><div style="font-size:30px">♧</div><h3>Referral programme not activated</h3><p>Referral links and bonuses need clear rules and a funded reward budget before launch.</p></div></section>
-<section class="panel" id="membership"><h2>Membership plans</h2><p class="muted">Proposed prices only; checkout is not active.</p><div class="plans">
-<article class="plan"><h3>Basic</h3><p class="muted">For members getting started</p><div class="price">$2 <small style="font-size:12px">one-time · proposed</small></div><ul><li>Member dashboard</li><li>Browse eligible opportunities</li><li>Track verified activity</li></ul><button class="btn light" data-plan="Basic">Review Basic</button></article>
-<article class="plan feature"><h3>Pro</h3><p style="color:#dbe6f3">For members who want more tools</p><div class="price">$8 <small style="font-size:12px">one-time · proposed</small></div><ul><li>Basic features</li><li>Pro opportunities when available</li><li>Priority support if provided</li></ul><button class="btn light" data-plan="Pro">Review Pro</button></article>
-</div><div class="notice">Membership never guarantees work, earnings or payouts. Connect and test checkout before accepting money.</div></section>
-<section class="panel" id="profile"><h2>Your profile</h2><div class="plan" style="max-width:550px"><div class="field"><label for="name">Display name</label><input id="name" placeholder="Your display name" maxlength="50"></div><div class="field"><label for="profileCountry">Country</label><select id="profileCountry"><option value="">Choose country</option><option>Kenya</option><option>South Africa</option><option>Tanzania</option><option>Uganda</option></select></div><button class="btn" id="save">Save preferences</button><p class="muted">Preferences are saved only in this browser, not an online account.</p></div></section>
-<div class="foot">PrimeTask · Opportunities vary by country and provider. Never pay anyone who promises guaranteed earnings.</div>
-</main></div>
-<nav class="mobile"><button class="active" data-page="home">⌂<br>Home</button><button data-page="tasks">▦<br>Tasks</button><button data-page="wallet">▤<br>Wallet</button><button data-page="referrals">♧<br>Referrals</button><button data-page="profile">⚙<br>Profile</button></nav>
-<script>
-const titles={home:'Welcome to PrimeTask',tasks:'Find tasks',wallet:'Your wallet',referrals:'Referral programme',membership:'Membership plans',profile:'Your profile'};
-function go(p){document.querySelectorAll('.panel').forEach(e=>e.classList.toggle('active',e.id===p));document.querySelectorAll('[data-page]').forEach(e=>e.classList.toggle('active',e.dataset.page===p));document.getElementById('title').textContent=titles[p]||'PrimeTask';window.scrollTo({top:0,behavior:'smooth'})}
-document.querySelectorAll('[data-page]').forEach(e=>e.onclick=()=>go(e.dataset.page));
-document.querySelectorAll('[data-go]').forEach(e=>e.onclick=()=>go(e.dataset.go));
-function country(v){document.getElementById('countryLabel').textContent=v||'Choose country';document.getElementById('country').value=v;document.getElementById('profileCountry').value=v;try{localStorage.setItem('pt_country',v)}catch(e){}}
-try{country(localStorage.getItem('pt_country')||'');document.getElementById('name').value=localStorage.getItem('pt_name')||''}catch(e){}
-document.getElementById('country').onchange=e=>country(e.target.value);
-document.getElementById('profileCountry').onchange=e=>country(e.target.value);
-document.getElementById('save').onclick=()=>{try{localStorage.setItem('pt_name',document.getElementById('name').value.trim())}catch(e){}alert('Preferences saved on this device. No online account has been created.')};
-document.querySelectorAll('[data-detail]').forEach(e=>e.onclick=()=>alert(e.dataset.detail+' are not live yet. A verified task-provider integration is required before real tasks or rewards can appear.'));
-document.querySelectorAll('[data-plan]').forEach(e=>e.onclick=()=>alert(e.dataset.plan+' checkout is not connected. Do not send payment until verified checkout and clear terms are available.'));
-</script>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-(()=>{
-const SUPABASE_URL="https://nvyeyauvfsylstpiaxbo.supabase.co";
-const SUPABASE_KEY="sb_publishable_shOlSolThhN0_PGEx0Qucw_oeuVClUu";
-const OFFERWALL_FUNCTION="https://nvyeyauvfsylstpiaxbo.supabase.co/functions/v1/smooth-endpoint";
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-const panel=document.createElement("section");
-panel.style.cssText="max-width:600px;margin:20px auto;padding:20px;background:#F7F9FC;color:#172D50;border:1px solid #DCE6F2;border-radius:16px;font-family:Arial,sans-serif;box-sizing:border-box";
-panel.innerHTML=`
-<h2>PrimeTask Account</h2>
-<p id="pt-message">Register or log in to access tasks.</p>
-<label for="pt-email">Email</label>
-<input id="pt-email" type="email" autocomplete="email" placeholder="Your email" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0;border:1px solid #DCE6F2;border-radius:8px">
-<label for="pt-password">Password</label>
-<input id="pt-password" type="password" autocomplete="current-password" placeholder="Password" style="display:block;width:100%;box-sizing:border-box;padding:12px;margin:8px 0;border:1px solid #DCE6F2;border-radius:8px">
-<button id="pt-register" class="btn">Create account</button>
-<button id="pt-login" class="btn">Log in</button>
-<button id="pt-logout" class="btn" hidden>Log out</button>
-<hr style="border:0;border-top:1px solid #DCE6F2;margin:16px 0">
-<button id="pt-offerwall" class="btn" hidden>Open Offerwall</button>`;
-document.body.prepend(panel);
-const el=id=>document.getElementById(id);
-const message=t=>{el("pt-message").textContent=t};
-async function refreshSession(){
-const {data,error}=await db.auth.getSession();
-if(error)message(error.message);
-const user=data?.session?.user;
-el("pt-register").hidden=!!user;el("pt-login").hidden=!!user;
-el("pt-logout").hidden=!user;el("pt-offerwall").hidden=!user;
-if(user)message("Logged in as "+user.email);
-else if(!error)message("Register or log in to access tasks.");
-}
-el("pt-register").onclick=async()=>{
-const email=el("pt-email").value.trim(),password=el("pt-password").value;
-if(!email||password.length<6){message("Enter your email and a password of at least 6 characters.");return}
-message("Creating account…");
-const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:"https://creditrestorationprime25-cell.github.io/primetask/"}});
-if(error){message(error.message);return}
-message(!data.session?"Check your email to verify your account, then log in.":"Account created. You are logged in.");
-await refreshSession();
-};
-el("pt-login").onclick=async()=>{
-const email=el("pt-email").value.trim(),password=el("pt-password").value;
-if(!email||!password){message("Enter your email and password.");return}
-message("Logging in…");
-const {error}=await db.auth.signInWithPassword({email,password});
-if(error){message(error.message);return}
-await refreshSession();
-};
-el("pt-logout").onclick=async()=>{
-const {error}=await db.auth.signOut();
-if(error){message(error.message);return}
-await refreshSession();
-};
-el("pt-offerwall").onclick=async()=>{
-const {data,error}=await db.auth.getSession(),token=data?.session?.access_token;
-if(error||!token){message("Please log in again.");await refreshSession();return}
-message("Preparing your secure Offerwall link…");el("pt-offerwall").disabled=true;
-try{
-const response=await fetch(OFFERWALL_FUNCTION,{method:"POST",headers:{"Authorization":"Bearer "+token,"apikey":SUPABASE_KEY,"Content-Type":"application/json"},body:"{}"});
-const result=await response.json().catch(()=>({}));
-if(!response.ok||!result.ok||!result.offerwallUrl)throw new Error(result.error||"Could not open Offerwall (HTTP "+response.status+").");
-window.location.assign(result.offerwallUrl);
-}catch(error){message(error.message||"Offerwall request failed.");el("pt-offerwall").disabled=false}
-};
-db.auth.onAuthStateChange(()=>{refreshSession()});
-refreshSession();
-})();
-</script>
-</body>
-  </html>
-  
+(() => {
+  "use strict";
+
+  const SUPABASE_URL = "https://nvyeyauvfsylstpiaxbo.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_shOlSolThhN0_PGEx0Qucw_oeuVClUu";
+  const OFFERWALL_FUNCTION =
+    "https://nvyeyauvfsylstpiaxbo.supabase.co/functions/v1/smooth-endpoint";
+
+  const $ = id => document.getElementById(id);
+  const authMessage = text => { $("auth-message").textContent = text; };
+
+  let db = null;
+  let currentUser = null;
+
+  function money(amount) {
+    const number = Number(amount);
+    return "$" + (Number.isFinite(number) ? number : 0).toFixed(2);
+  }
+
+  function showPage(page) {
+    document.querySelectorAll(".main > .panel").forEach(panel => {
+      panel.classList.toggle("active", panel.id === page);
+    });
+
+    document.querySelectorAll("[data-page]").forEach(button => {
+      button.classList.toggle("active", button.dataset.page === page);
+    });
+
+    const titles = {
+      home:"Welcome to PrimeTask",
+      tasks:"Find tasks",
+      wallet:"Your wallet",
+      referrals:"Referral programme",
+      membership:"Membership plans",
+      profile:"Your profile"
+    };
+
+    $("page-title").textContent = titles[page] || "PrimeTask";
+    window.scrollTo({top:0,behavior:"smooth"});
+
+    if (page === "wallet") refreshWallet();
+  }
+
+  document.querySelectorAll("[data-page]").forEach(button => {
+    button.addEventListener("click", () => showPage(button.dataset.page));
+  });
+
+  document.querySelectorAll("[data-go]").forEach(button => {
+    button.addEventListener("click", () => showPage(button.dataset.go));
+  });
+
+  $("account-toggle").addEventListener("click", () => {
+    $("account-panel").scrollIntoView({behavior:"smooth",block:"start"});
+  });
+
+  function updateAuthUI(user) {
+    currentUser = user || null;
+    $("auth-fields").hidden = !!user;
+    $("pt-logout").hidden = !user;
+    $("pt-offerwall").hidden = !user;
+
+    if (user) {
+      authMessage("Logged in as " + (user.email || "your account") + ".");
+      $("pt-profile-name").value =
+        user.user_metadata?.display_name || $("pt-profile-name").value;
+      refreshWallet();
+    } else {
+      authMessage("Register or log in to access your account.");
+      $("pt-wallet-balance").textContent = "$0.00";
+      $("pt-home-balance").textContent = "$0.00";
+      $("pt-wallet-history").textContent = "Log in to load your wallet balance.";
+    }
+  }
+
+  async function refreshWallet() {
+    if (!db) return;
+
+    if (!currentUser) {
+      $("pt-wallet-balance").textContent = "Log in";
+      $("pt-home-balance").textContent = "Log in";
+      $("pt-wallet-history").textContent = "Please log in to view your wallet.";
+      return;
+    }
+
+    $("pt-wallet-balance").textContent = "Loading…";
+    $("pt-home-balance").textContent = "Loading…";
+    $("pt-wallet-history").textContent = "Checking your wallet…";
+
+    try {
+      const {data: wallet, error} = await db
+        .from("wallets")
+        .select("balance")
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      const balance = Number(wallet?.balance ?? 0);
+      $("pt-wallet-balance").textContent = money(balance);
+      $("pt-home-balance").textContent = money(balance);
+
+      $("pt-wallet-history").textContent = wallet
+        ? "Wallet balance loaded. No transaction history is displayed yet."
+        : "No wallet record was found for this account. A secure backend must create it.";
+
+    } catch (error) {
+      $("pt-wallet-balance").textContent = "Unavailable";
+      $("pt-home-balance").textContent = "Unavailable";
+      $("pt-wallet-history").textContent =
+        "Could not load wallet: " + (error.message || "Unknown error") +
+        ". Check the wallets table and its Row Level Security policies.";
+    }
+  }
+
+  $("pt-refresh-wallet").addEventListener("click", refreshWallet);
+
+  async function start() {
+    if (!window.supabase) {
+      authMessage("Could not load Supabase. Check your internet connection and reload.");
+      return;
+    }
+
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const {data, error} = await db.auth.getSession();
+
+    if (error) {
+      authMessage("Session check failed: " + error.message);
+      return;
+    }
+
+    updateAuthUI(data.session?.user || null);
+
+    db.auth.onAuthStateChange((_event, session) => {
+      updateAuthUI(session?.user || null);
+    });
+  }
+
+  $("pt-register").addEventListener("click", async () => {
+    if (!db) return authMessage("Supabase is not ready yet.");
+
+    const email = $("pt-email").value.trim();
+    const password = $("pt-password").value;
+    const name = $("pt-name").value.trim();
+
+    if (!email || password.length < 6) {
+      return authMessage("Enter a valid email and a password of at least 6 characters.");
+    }
+
+    $("pt-register").disabled = true;
+    authMessage("Creating your account…");
+
+    try {
+      const {data,error} = await db.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: "https://creditrestorationprime25-cell.github.io/primetask/",
+          data: {display_name:name}
+        }
+      });
+
+      if (error) throw error;
+
+      if (data.session) {
+        updateAuthUI(data.session.user);
+        authMessage("Account created and logged in.");
+      } else {
+        authMessage("Account created. Check your email for the verification link, then log in.");
+      }
+    } catch (error) {
+      authMessage("Registration failed: " + error.message);
+    } finally {
+      $("pt-register").disabled = false;
+    }
+  });
+
+  $("pt-login").addEventListener("click", async () => {
+    if (!db) return authMessage("Supabase is not ready yet.");
+
+    const email = $("pt-email").value.trim();
+    const password = $("pt-password").value;
+
+    if (!email || !password) {
+      return authMessage("Enter your email and password.");
+    }
+
+    $("pt-login").disabled = true;
+    authMessage("Logging in…");
+
+    try {
+      const {data,error} = await db.auth.signInWithPassword({email,password});
+      if (error) throw error;
+      updateAuthUI(data.user);
+    } catch (error) {
+      authMessage("Login failed: " + error.message);
+    } finally {
+      $("pt-login").disabled = false;
+    }
+  });
+
+  $("pt-reset").addEventListener("click", async () => {
+    if (!db) return authMessage("Supabase is not ready yet.");
+
+    const email = $("pt-email").value.trim();
+    if (!email) return authMessage("Enter your email first.");
+
+    try {
+      const {error} = await db.auth.resetPasswordForEmail(email, {
+        redirectTo:"https://creditrestorationprime25-cell.github.io/primetask/"
+      });
+      if (error) throw error;
+      authMessage("If the account exists, a password reset email will be sent.");
+    } catch (error) {
+      authMessage("Password 
