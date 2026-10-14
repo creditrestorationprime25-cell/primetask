@@ -668,4 +668,8 @@ db.auth.onAuthStateChange((_event, session) => {
       if (error) throw error;
       authMessage("If the account exists, a password reset email will be sent.");
     } catch (error) {
-      authMessage("Password 
+      authMessage("Password reset failed: " + error.message);
+  }
+});
+start();
+})();
