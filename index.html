@@ -456,7 +456,7 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
   const SUPABASE_URL = "https://nvyeyauvfsylstpiaxbo.supabase.co";
   const SUPABASE_KEY = "sb_publishable_shOlSolThhN0_PGEx0Qucw_oeuVClUu";
   const OFFERWALL_FUNCTION =
-    "https://nvyeyauvfsylstpiaxbo.supabase.co/functions/v1/smooth-endpoint";
+    "https://nvyeyauvfsylstpiaxbo.supabase.co/functions/v1/smooth-function";
 
   const $ = id => document.getElementById(id);
   const authMessage = text => { $("auth-message").textContent = text; };
@@ -565,6 +565,50 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
 
   $("pt-refresh-wallet").addEventListener("click", refreshWallet);
 
+  // Request a user-specific, temporary Offerwall.me URL from the deployed Edge Function.
+  $("pt-offerwall").addEventListener("click", async () => {
+    if (!db) return authMessage("Supabase is not ready yet.");
+    if (!currentUser) return authMessage("Please log in before opening tasks.");
+
+    const button = $("pt-offerwall");
+    button.disabled = true;
+    authMessage("Preparing your secure task provider link…");
+
+    try {
+      const { data: sessionData, error: sessionError } = await db.auth.getSession();
+      if (sessionError) throw sessionError;
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error("Your session has expired. Please log in again.");
+
+      const response = await fetch(OFFERWALL_FUNCTION, {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + accessToken,
+          "apikey": SUPABASE_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({})
+      });
+
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(result.error || result.message || ("Task provider request failed (HTTP " + response.status + ")."));
+      }
+
+      const providerUrl = result.url || result.offerwallUrl || result.offerwall_url || result.link;
+      if (typeof providerUrl !== "string" || !/^https:\/\/offerwall\.me\//i.test(providerUrl)) {
+        throw new Error("The Edge Function did not return a valid Offerwall.me URL. Check its response in Supabase Logs.");
+      }
+
+      authMessage("Task provider link ready. Opening Offerwall.me…");
+      window.location.href = providerUrl;
+    } catch (error) {
+      authMessage("Could not open task provider: " + (error.message || "Unknown error"));
+    } finally {
+      button.disabled = false;
+    }
+  });
+
   async function start() {
     if (!window.supabase) {
       authMessage("Could not load Supabase. Check your internet connection and reload.");
@@ -604,86 +648,4 @@ db.auth.onAuthStateChange((_event, session) => {
 
     const email = $("pt-email").value.trim();
     const password = $("pt-password").value;
-    const name = $("pt-name").value.trim();
-
-    if (!email || password.length < 6) {
-      return authMessage("Enter a valid email and a password of at least 6 characters.");
-    }
-
-    $("pt-register").disabled = true;
-    authMessage("Creating your account…");
-
-    try {
-      const {data,error} = await db.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: "https://creditrestorationprime25-cell.github.io/primetask/",
-          data: {display_name:name}
-        }
-      });
-
-      if (error) throw error;
-
-      if (data.session) {
-        updateAuthUI(data.session.user);
-        authMessage("Account created and logged in.");
-      } else {
-        authMessage("Account created. Check your email for the verification link, then log in.");
-      }
-    } catch (error) {
-      authMessage("Registration failed: " + error.message);
-    } finally {
-      $("pt-register").disabled = false;
-    }
-  });
-
-  $("pt-login").addEventListener("click", async () => {
-    if (!db) return authMessage("Supabase is not ready yet.");
-
-    const email = $("pt-email").value.trim();
-    const password = $("pt-password").value;
-
-    if (!email || !password) {
-      return authMessage("Enter your email and password.");
-    }
-
-    $("pt-login").disabled = true;
-    authMessage("Logging in…");
-
-    try {
-      const {data,error} = await db.auth.signInWithPassword({email,password});
-      if (error) throw error;
-      updateAuthUI(data.user);
-    } catch (error) {
-      authMessage("Login failed: " + error.message);
-    } finally {
-      $("pt-login").disabled = false;
-    }
-  });
-
-  
-  $("pt-reset").addEventListener("click", async () => {
-    if (!db) return authMessage("Supabase is not ready yet.");
-
-    const email = $("pt-email").value.trim();
-    if (!email) return authMessage("Enter your email first.");
-
-    try {
-      const { error } = await db.auth.resetPasswordForEmail(email, {
-        redirectTo: "https://creditrestorationprime25-cell.github.io/primetask/"
-      });
-
-      if (error) throw error;
-
-      authMessage("If the account exists, a password reset email will be sent.");
-    } catch (error) {
-      authMessage("Password reset failed: " + error.message);
-    }
-  });
-
-  start();
-})();</script>
-</body>
-</html>
   
