@@ -27,4 +27,178 @@ document.getElementById('country').onchange=e=>country(e.target.value);document.
 document.getElementById('save').onclick=()=>{try{localStorage.setItem('pt_name',document.getElementById('name').value.trim())}catch(e){}alert('Preferences saved on this device. No online account has been created.')};
 document.querySelectorAll('[data-detail]').forEach(e=>e.onclick=()=>alert(e.dataset.detail+' are not live yet. A verified task-provider integration is required before real tasks or rewards can appear.'));
 document.querySelectorAll('[data-plan]').forEach(e=>e.onclick=()=>alert(e.dataset.plan+' checkout is not connected. Do not send payment until verified checkout and clear terms are available.'));
-</script></body></html>
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(() => {
+  const SUPABASE_URL = "https://nvyeyauvfsylstpiaxbo.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_shOlSolThhN0_PGEx0Qucw_oeuVClUu";
+  const OFFERWALL_FUNCTION =
+    "https://nvyeyauvfsylstpiaxbo.supabase.co/functions/v1/smooth-endpoint";
+
+  if (SUPABASE_KEY.includes("PASTE_YOUR")) {
+    alert("Add your Supabase publishable key in index.html first.");
+    return;
+  }
+
+  const db = window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+  const panel = document.createElement("section");
+  panel.style.cssText =
+    "max-width:600px;margin:20px auto;padding:20px;" +
+    "background:#f8f3e8;color:#172b4d;border-radius:16px;" +
+    "font-family:Arial,sans-serif;box-sizing:border-box";
+
+  panel.innerHTML = `
+    <h2>PrimeTask Account</h2>
+    <p id="pt-message">Register or log in to access tasks.</p>
+    <label for="pt-email">Email</label>
+    <input id="pt-email" type="email" autocomplete="email"
+      placeholder="Your email" style="display:block;width:100%;
+      box-sizing:border-box;padding:12px;margin:8px 0">
+    <label for="pt-password">Password</label>
+    <input id="pt-password" type="password"
+      autocomplete="current-password" placeholder="Password"
+      style="display:block;width:100%;box-sizing:border-box;
+      padding:12px;margin:8px 0">
+    <button id="pt-register">Create account</button>
+    <button id="pt-login">Log in</button>
+    <button id="pt-logout" hidden>Log out</button>
+    <hr>
+    <button id="pt-offerwall" hidden>Open Offerwall</button>
+  `;
+
+  document.body.prepend(panel);
+
+  const el = id => document.getElementById(id);
+  const message = text => {
+    el("pt-message").textContent = text;
+  };
+
+  async function refreshSession() {
+    const { data } = await db.auth.getSession();
+    const user = data.session?.user;
+
+    el("pt-register").hidden = !!user;
+    el("pt-login").hidden = !!user;
+    el("pt-logout").hidden = !user;
+    el("pt-offerwall").hidden = !user;
+
+    message(user
+      ? "Logged in as " + user.email
+      : "Register or log in to access tasks.");
+  }
+
+  el("pt-register").onclick = async () => {
+    const email = el("pt-email").value.trim();
+    const password = el("pt-password").value;
+
+    if (!email || password.length < 6) {
+      message("Enter your email and a password of at least 6 characters.");
+      return;
+    }
+
+    message("Creating account…");
+
+    const { data, error } = await db.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo:
+          "https://creditrestorationprime25-cell.github.io/primetask/"
+      }
+    });
+
+    if (error) {
+      message(error.message);
+      return;
+    }
+
+    if (!data.session) {
+      message("Check your email to verify your account, then log in.");
+    } else {
+      message("Account created. You are logged in.");
+    }
+
+    await refreshSession();
+  };
+
+  el("pt-login").onclick = async () => {
+    const email = el("pt-email").value.trim();
+    const password = el("pt-password").value;
+
+    message("Logging in…");
+
+    const { error } = await db.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      message(error.message);
+      return;
+    }
+
+    await refreshSession();
+  };
+
+  el("pt-logout").onclick = async () => {
+    const { error } = await db.auth.signOut();
+
+    if (error) {
+      message(error.message);
+      return;
+    }
+
+    await refreshSession();
+  };
+
+  el("pt-offerwall").onclick = async () => {
+    const { data, error } = await db.auth.getSession();
+    const token = data.session?.access_token;
+
+    if (error || !token) {
+      message("Please log in again.");
+      await refreshSession();
+      return;
+    }
+
+    message("Preparing your secure Offerwall link…");
+    el("pt-offerwall").disabled = true;
+
+    try {
+      const response = await fetch(OFFERWALL_FUNCTION, {
+        method: "POST",
+        headers: {
+          "Authorization": "Bearer " + token,
+          "apikey": SUPABASE_KEY,
+          "Content-Type": "application/json"
+        },
+        body: "{}"
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.ok || !result.offerwallUrl) {
+        throw new Error(result.error || "Could not open Offerwall.");
+      }
+
+      window.location.assign(result.offerwallUrl);
+    } catch (error) {
+      message(error.message || "Offerwall request failed.");
+      el("pt-offerwall").disabled = false;
+    }
+  };
+
+  db.auth.onAuthStateChange(() => {
+    refreshSession();
+  });
+
+  refreshSession();
+})();
+</script>
+</body>
+</html>
