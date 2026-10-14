@@ -573,7 +573,14 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
 
     db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const {data, error} = await db.auth.getSession();
+    authMessage("Connecting to Supabase...");
+const sessionCheck = await Promise.race([
+  db.auth.getSession(),
+  new Promise((_, reject) =>
+    setTimeout(() => reject(new Error("Supabase session request timed out")), 10000)
+  )
+]);
+const { data, error } = sessionCheck;
 
     if (error) {
       authMessage("Session check failed: " + error.message);
