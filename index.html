@@ -515,7 +515,6 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
       authMessage("Logged in as " + (user.email || "your account") + ".");
       $("pt-profile-name").value =
         user.user_metadata?.display_name || $("pt-profile-name").value;
-      refreshWallet();
     } else {
       authMessage("Register or log in to access your account.");
       $("pt-wallet-balance").textContent = "$0.00";
@@ -581,11 +580,16 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
       return;
     }
 
-    updateAuthUI(data.session?.user || null);
-
-    db.auth.onAuthStateChange((_event, session) => {
-      updateAuthUI(session?.user || null);
-    });
+updateAuthUI(data.session?.user || null);
+if (data.session?.user) {
+  window.setTimeout(() => refreshWallet(), 0);
+}
+db.auth.onAuthStateChange((_event, session) => {
+  updateAuthUI(session?.user || null, false);
+  window.setTimeout(() => {
+    if (session?.user) refreshWallet();
+  }, 0);
+});
   }
 
   $("pt-register").addEventListener("click", async () => {
