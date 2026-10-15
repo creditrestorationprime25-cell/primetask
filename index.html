@@ -621,4 +621,417 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
         ". The profiles table must have an id column matching the authenticated user ID, a country column, and an RLS policy allowing users to insert/update their own row."
       );
     }
-    syncCou
+    syncCountryFields(cleanCountry);
+  }
+
+  async function saveCountryToProfile(country) {
+    if (!db || !currentUser) throw new Error("Please log in first.");
+    const cleanCountry = String(country || "").trim();
+    if (!cleanCountry) throw new Error("Choose your country first.");
+
+    const { error: metadataError, data: userData } = await db.auth.updateUser({
+      data: {
+        display_name: $("pt-profile-name").value.trim() || currentUser.user_metadata?.display_name || "",
+        country: cleanCountry
+      }
+    });
+    if (metadataError) throw metadataError;
+    if (userData?.user) currentUser = userData.user;
+    try {
+      await upsertCountryProfile(cleanCountry);
+    } catch (error) {
+      throw new Error("Your account details were updated, but " + errorText(error));
+    }
+  }
+
+  async function refreshWallet() {
+    if (!db || walletRequestInProgress) return;
+    if (!currentUser) {
+      $("pt-wallet-balance").textContent = "Log in";
+      $("pt-home-balance").textContent = "Log in";
+      $("pt-wallet-history").textContent = "Please log in to view your wallet.";
+      return;
+    }
+
+    walletRequestInProgress = true;
+    $("pt-wallet-balance").textContent = "Loading…";
+    $("pt-home-balance").textContent = "Loading…";
+    $("pt-wallet-history").textContent = "Checking your wallet…";
+    try {
+      const { data: wallet, error } = await db
+        .from("wallets")
+        .select("balance")
+        .eq("user_id", currentUser.id)
+        .maybeSingle();
+      if (error) throw error;
+
+      const balance = Number(wallet?.balance ?? 0);
+      $("pt-wallet-balance").textContent = money(balance);
+      $("pt-home-balance").textContent = money(balance);
+      $("pt-wallet-history").textContent = wallet
+        ? "Wallet balance loaded. Transaction history is not connected to this screen yet."
+        : "No wallet record was found for this account. A backend must create a wallet row for each user.";
+    } catch (error) {
+      $("pt-wallet-balance").textContent = "Unavailable";
+      $("pt-home-balance").textContent = "Unavailable";
+      $("pt-wallet-history").textContent =
+        "Could not load wallet: " + errorText(error) +
+        ". Check that public.wallets has a user_id and balance column and that its RLS policy allows this user to read their own row.";
+    } finally {
+      walletRequestInProgress = false;
+    }
+  }
+  $("pt-refresh-wallet").addEventListener("click", () => void refreshWallet());
+
+  function renderTasks(tasks) {
+    const cards = $("tasks").querySelector(".cards");
+    cards.replaceChildren();
+
+    if (tasks.length === 0) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = "No tasks are available for your country right now. Check again later.";
+      cards.appendChild(empty);
+      return;
+    }
+
+    tasks.forEach(task => {
+      const card = document.createElement("article");
+      card.className = "task";
+
+      const title = document.createElement("h3");
+      title.textContent = task.title || task.name || "Available task";
+      const description = document.createElement("p");
+      description.className = "muted";
+      description.textContent = task.description || task.instructions || "See provider details.";
+      card.append(title, description);
+
+      const rewardValue = task.reward ?? task.payout ?? task.amount;
+      if (rewardValue !== undefined && rewardValue !== null && String(rewardValue).trim() !== "") {
+        const reward = document.createElement("p");
+        reward.textContent = "Reward: " + String(rewardValue);
+        card.appendChild(reward);
+      }
+
+      const taskUrl = task.url || task.task_url || task.click_url || task.link;
+      if (typeof taskUrl === "string" && /^https?:\/\//i.test(taskUrl)) {
+        const openButton = document.createElement("a");
+        openButton.href = taskUrl;
+        openButton.target = "_blank";
+        openButton.rel = "noopener noreferrer";
+        openButton.textContent = "Open task";
+        openButton.className = "btn";
+        card.appendChild(openButton);
+      } else {
+        const note = document.createElement("p");
+        note.className = "muted";
+        note.textContent = task.proof_text || task.instructions || "No task link was supplied by the provider.";
+        card.appendChild(note);
+      }
+      cards.appendChild(card);
+    });
+  }
+
+  $("pt-offerwall").addEventListener("click", async () => {
+    if (!db || !currentUser) {
+      authMessage("Please log in before loading tasks.");
+      return;
+    }
+    if (taskRequestInProgress) return;
+
+    const country = $("pt-country").value || $("pt-profile-country").value || currentUser.user_metadata?.country || "";
+    if (!country) {
+      authMessage("Choose your country in Find tasks first, then load tasks again.");
+      showPage("tasks");
+      $("pt-country").focus();
+      return;
+    }
+
+    const button = $("pt-offerwall");
+    taskRequestInProgress = true;
+    button.disabled = true;
+    const originalLabel = button.textContent;
+    button.textContent = "Loading tasks…";
+    authMessage("Saving your country and loading available tasks…");
+
+    try {
+      $("pt-profile-country").value = country;
+      await saveCountryToProfile(country);
+
+      const { data: sessionData, error: sessionError } = await db.auth.getSession();
+      if (sessionError) throw sessionError;
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error("Your session has expired. Please log in again.");
+
+      const response = await fetch(TASKS_FUNCTION, {
+        method: "GET",
+        headers: {
+          "Authorization": "Bearer " + accessToken,
+          "apikey": SUPABASE_KEY,
+          "Accept": "application/json"
+        }
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(result.error || result.message || "Task request failed (HTTP " + response.status + ").");
+      }
+
+      const tasks = Array.isArray(result.data) ? result.data
+        : Array.isArray(result.tasks) ? result.tasks
+        : Array.isArray(result.offers) ? result.offers
+        : Array.isArray(result.data?.tasks) ? result.data.tasks
+        : null;
+      if (!tasks) {
+        throw new Error("The task function responded, but did not return a task list array. Check its response format.");
+      }
+
+      renderTasks(tasks);
+      authMessage("Task provider responded successfully. Tasks received: " + tasks.length + ". Completing a task does not credit rewards until the provider's signed postback is verified by the backend.");
+      showPage("tasks");
+    } catch (error) {
+      authMessage("Could not load tasks: " + errorText(error) + " If this mentions public.profiles, check the profiles table and its user-owned RLS policy.");
+    } finally {
+      taskRequestInProgress = false;
+      button.disabled = false;
+      button.textContent = originalLabel;
+    }
+  });
+
+  $("pt-country").addEventListener("change", () => {
+    if ($("pt-country").value) $("pt-profile-country").value = $("pt-country").value;
+  });
+  $("pt-profile-country").addEventListener("change", () => {
+    if ($("pt-profile-country").value) $("pt-country").value = $("pt-profile-country").value;
+  });
+
+  $("pt-register").addEventListener("click", async () => {
+    if (!db) return authMessage("Supabase is not ready yet. Reload the page if this message remains.");
+    const email = $("pt-email").value.trim();
+    const password = $("pt-password").value;
+    const name = $("pt-name").value.trim();
+    if (!email || !password) return authMessage("Enter your email and password.");
+
+    const button = $("pt-register");
+    button.disabled = true;
+    try {
+      authMessage("Creating your account…");
+      const { data, error } = await db.auth.signUp({
+        email,
+        password,
+        options: { data: { display_name: name } }
+      });
+      if (error) throw error;
+      if (data.session && data.user) {
+        updateAuthUI(data.user);
+        authMessage("Account created successfully. Choose your country in Find tasks to begin.");
+      } else {
+        authMessage("Registration submitted. Check your email to confirm your account if email confirmation is enabled.");
+      }
+    } catch (error) {
+      authMessage("Registration failed: " + errorText(error));
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $("pt-login").addEventListener("click", async () => {
+    if (!db) return authMessage("Supabase is still connecting. Wait briefly and try again.");
+    const email = $("pt-email").value.trim();
+    const password = $("pt-password").value;
+    if (!email || !password) return authMessage("Enter your email and password.");
+
+    const button = $("pt-login");
+    button.disabled = true;
+    try {
+      authMessage("Logging in…");
+      const { data, error } = await db.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      updateAuthUI(data.user);
+      await refreshWallet();
+    } catch (error) {
+      authMessage("Login failed: " + errorText(error));
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $("pt-reset").addEventListener("click", async () => {
+    if (!db) return authMessage("Supabase is still connecting. Wait briefly and try again.");
+    const email = $("pt-email").value.trim();
+    if (!email) return authMessage("Enter your email first.");
+    const button = $("pt-reset");
+    button.disabled = true;
+    try {
+      authMessage("Requesting password recovery…");
+      const { error } = await db.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + window.location.pathname
+      });
+      if (error) throw error;
+      authMessage("Recovery email requested. Check your inbox and Spam folder. The site URL must also be allowed in Supabase Auth URL Configuration.");
+    } catch (error) {
+      authMessage("Password recovery request failed: " + errorText(error));
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $("pt-save-new-password").addEventListener("click", async () => {
+    if (!db) return authMessage("Supabase is not ready yet.");
+    const password = $("pt-new-password").value;
+    const confirmation = $("pt-confirm-password").value;
+    if (password.length < 8) return authMessage("Use a new password with at least 8 characters.");
+    if (password !== confirmation) return authMessage("The new passwords do not match.");
+
+    const button = $("pt-save-new-password");
+    button.disabled = true;
+    try {
+      authMessage("Updating your password…");
+      const { data, error } = await db.auth.updateUser({ password });
+      if (error) throw error;
+      recoveryMode = false;
+      $("password-recovery").hidden = true;
+      $("pt-new-password").value = "";
+      $("pt-confirm-password").value = "";
+      if (data?.user) updateAuthUI(data.user);
+      window.history.replaceState({}, document.title, window.location.pathname + window.location.search);
+      authMessage("Your password has been updated successfully.");
+    } catch (error) {
+      authMessage("Could not update password: " + errorText(error));
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $("pt-logout").addEventListener("click", async () => {
+    if (!db) return;
+    const button = $("pt-logout");
+    button.disabled = true;
+    try {
+      const { error } = await db.auth.signOut();
+      if (error) throw error;
+      updateAuthUI(null);
+    } catch (error) {
+      authMessage("Logout failed: " + errorText(error));
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $("pt-save-profile").addEventListener("click", async () => {
+    if (!db || !currentUser) {
+      $("pt-profile-message").textContent = "Please log in first.";
+      return;
+    }
+    const name = $("pt-profile-name").value.trim();
+    const country = $("pt-profile-country").value;
+    const button = $("pt-save-profile");
+    button.disabled = true;
+    $("pt-profile-message").textContent = "Saving profile…";
+    try {
+      const { data, error } = await db.auth.updateUser({
+        data: { display_name: name, country: country }
+      });
+      if (error) throw error;
+      if (data?.user) currentUser = data.user;
+      if (country) await upsertCountryProfile(country);
+      $("pt-profile-message").textContent = "Profile preferences saved.";
+    } catch (error) {
+      $("pt-profile-message").textContent = "Could not fully save profile: " + errorText(error);
+    } finally {
+      button.disabled = false;
+    }
+  });
+
+  $("pt-withdraw-submit").addEventListener("click", async () => {
+    const message = $("pt-withdraw-message");
+    if (!db || !currentUser) {
+      message.textContent = "Please log in first.";
+      return;
+    }
+    if (withdrawalInProgress) return;
+
+    const amount = Number($("pt-withdraw-amount").value);
+    const method = $("pt-withdraw-method").value;
+    const details = $("pt-withdraw-details").value.trim();
+    if (!Number.isFinite(amount) || amount < 1) {
+      message.textContent = "Enter a valid withdrawal amount of at least $1.00.";
+      return;
+    }
+    if (!method || details.length < 3) {
+      message.textContent = "Choose a payout method and enter valid payout details.";
+      return;
+    }
+
+    const button = $("pt-withdraw-submit");
+    withdrawalInProgress = true;
+    button.disabled = true;
+    message.textContent = "Submitting withdrawal request…";
+    try {
+      const { data, error } = await db.rpc("request_withdrawal", {
+        p_amount: amount,
+        p_payout_method: method,
+        p_payout_details: details
+      });
+      if (error) throw error;
+      message.textContent = "Withdrawal request submitted. Reference: " + String(data ?? "received");
+      $("pt-withdraw-amount").value = "";
+      $("pt-withdraw-method").value = "";
+      $("pt-withdraw-details").value = "";
+      await refreshWallet();
+    } catch (error) {
+      message.textContent = "Withdrawal failed: " + errorText(error) +
+        ". This request only records a request; it does not transfer money automatically.";
+    } finally {
+      withdrawalInProgress = false;
+      button.disabled = false;
+    }
+  });
+
+  async function start() {
+    if (!window.supabase || typeof window.supabase.createClient !== "function") {
+      authMessage("Supabase JavaScript did not load. Check your connection, then reload this page.");
+      return;
+    }
+
+    db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+    });
+
+    db.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY" || new URLSearchParams(window.location.hash.slice(1)).get("type") === "recovery") {
+        currentUser = session?.user || currentUser;
+        showPasswordRecovery();
+        return;
+      }
+      if (!recoveryMode) updateAuthUI(session?.user || null);
+      if (session?.user && !recoveryMode) window.setTimeout(() => void refreshWallet(), 0);
+    });
+
+    if (recoveryMode) {
+      showPasswordRecovery();
+    }
+
+    authMessage("Connecting to Supabase…");
+    try {
+      const { data, error } = await withTimeout(
+        db.auth.getSession(),
+        12000,
+        "Supabase session check timed out. Reload the page and try again."
+      );
+      if (error) throw error;
+      if (!recoveryMode) {
+        updateAuthUI(data.session?.user || null);
+        if (data.session?.user) await refreshWallet();
+      }
+    } catch (error) {
+      authMessage("Could not connect to Supabase: " + errorText(error) + ". Check the project URL/key and Supabase availability.");
+    }
+  }
+
+  start().catch(error => {
+    authMessage("PrimeTask startup failed: " + errorText(error));
+  });
+})();
+</script>
+</body>
+</html>
