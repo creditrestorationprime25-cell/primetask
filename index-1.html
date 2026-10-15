@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#172D50">
+<title>PrimeTask | Earn Through Tasks</title>
+<style>
+:root{--navy:#172D50;--blue:#356AE6;--cream:#F7F9FC;--white:#fff;--soft:#EAF1FF;--muted:#687991;--line:#DCE6F2;--green:#16845B;--red:#B42318;--shadow:0 8px 28px rgba(23,45,80,.06)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--cream);color:var(--navy);font:15px/1.5 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #8AB9FF;outline-offset:2px}a{color:inherit}.layout{display:grid;grid-template-columns:225px minmax(0,1fr);min-height:100vh}.side{background:#fff;border-right:1px solid var(--line);padding:24px 16px;position:sticky;top:0;height:100vh}.brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:850;margin:0 0 28px}.logo{width:34px;height:34px;border-radius:11px;background:var(--navy);color:white;display:grid;place-items:center;font-weight:900}.nav{display:grid;gap:7px}.nav button,.mobile button{border:0;border-radius:11px;padding:12px;text-align:left;background:transparent;color:var(--muted);font-weight:700}.nav button.active,.nav button:hover,.mobile button.active,.mobile button:hover{background:var(--soft);color:var(--navy)}.notice{margin-top:24px;background:#EEF4FF;border-radius:12px;padding:12px;color:#405778;font-size:12px}.main{padding:26px;min-width:0;max-width:1480px;width:100%;margin:0 auto}.top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}.eyebrow{color:var(--muted);letter-spacing:.04em;font-size:13px}.top h1{font-size:30px;line-height:1.15;margin:5px 0 0}.panel{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:var(--shadow);min-width:0}.panel h2{font-size:21px;margin:0 0 12px}.muted{color:var(--muted)}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--navy);color:white;border:0;border-radius:11px;padding:11px 15px;font-weight:750;text-decoration:none;min-height:44px}.btn:hover{filter:brightness(1.08)}.btn.light{background:var(--soft);color:var(--navy)}.btn:disabled{opacity:.55;cursor:not-allowed}.btnrow{display:flex;gap:8px;flex-wrap:wrap}.message{margin:12px 0;padding:11px 13px;border-radius:10px;background:var(--soft);overflow-wrap:anywhere}.message.error{background:#FEF3F2;color:var(--red)}.message.success{background:#ECFDF3;color:var(--green)}.field{margin:12px 0}.field label{display:block;font-weight:700;margin-bottom:5px}.field input,.field select{width:100%;padding:12px;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--navy);min-height:47px}.auth{max-width:650px;margin:0 auto 18px}.hero{background:linear-gradient(120deg,#EAF1FF,#fff);border:1px solid var(--line);border-radius:22px;padding:26px;margin-bottom:18px}.tag{display:inline-block;background:var(--soft);border-radius:20px;padding:4px 10px;font-size:11px;font-weight:800}.hero h2{font-size:28px;line-height:1.2;margin:10px 0}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}.stat{border:1px solid var(--line);border-radius:15px;background:#fff;padding:15px;min-width:0}.stat strong{display:block;font-size:22px;margin-top:5px;overflow-wrap:anywhere}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.task{border:1px solid var(--line);border-radius:16px;padding:17px;background:#fff;min-width:0;display:flex;flex-direction:column;gap:9px}.task h3{font-size:18px;margin:0;overflow-wrap:anywhere}.task p{margin:0;overflow-wrap:anywhere}.task .btn{align-self:flex-start;margin-top:4px}.task .reward{font-weight:750}.empty{padding:20px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center}.hidden{display:none!important}.page{display:none}.page.active{display:block}.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.small{font-size:12px}.mobile{display:none}footer{font-size:12px;color:var(--muted);padding:16px 2px 80px}.safe-note{font-size:12px;color:var(--muted);margin-top:10px}.status-pill{display:inline-block;border-radius:20px;background:#EAF1FF;padding:3px 9px;font-weight:700;font-size:12px}
+@media(max-width:820px){.layout{display:block}.side{display:none}.main{padding:22px 16px 92px}.mobile{display:flex;position:fixed;z-index:20;bottom:0;left:0;right:0;justify-content:space-around;gap:2px;background:#fff;border-top:1px solid var(--line);padding:7px max(8px,env(safe-area-inset-left)) calc(7px + env(safe-area-inset-bottom));}.mobile button{padding:8px 6px;text-align:center;font-size:12px;flex:1}.top h1{font-size:26px}.cards{grid-template-columns:1fr}.stats{gap:8px}.stat{padding:11px}.stat strong{font-size:19px}.panel{padding:18px}.hero{padding:21px}.two{grid-template-columns:1fr}}
+@media(min-width:821px) and (max-width:1050px){.cards{grid-template-columns:1fr}.main{padding:22px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="side">
+    <div class="brand"><span class="logo">P</span><span>PrimeTask</span></div>
+    <nav class="nav" aria-label="Main navigation">
+      <button class="active" data-page="home">Overview</button>
+      <button data-page="tasks">Find tasks</button>
+      <button data-page="wallet">Your wallet</button>
+      <button data-page="referrals">Referrals</button>
+      <button data-page="membership">Membership</button>
+      <button data-page="profile">Your profile</button>
+    </nav>
+    <div class="notice">Work at your own pace. Rewards are added only after a provider verifies completion. Never share your password.</div>
+  </aside>
+  <main class="main">
+    <header class="top">
+      <div><div class="eyebrow">PRIMETASK WORKSPACE</div><h1 id="page-title">Welcome to PrimeTask</h1></div>
+      <button class="btn light" id="account-toggle">Account</button>
+    </header>
+
+    <section class="panel auth" id="account-panel">
+      <h2>PrimeTask Account</h2>
+      <p class="muted">Register or log in to access your account and tasks.</p>
+      <div id="auth-message" class="message" role="status" aria-live="polite">Checking account status...</div>
+      <div id="auth-fields">
+        <div class="field"><label for="pt-email">Email</label><input id="pt-email" type="email" autocomplete="email" placeholder="Your email"></div>
+        <div class="field"><label for="pt-password">Password</label><input id="pt-password" type="password" autocomplete="current-password" placeholder="Password"></div>
+        <div class="field"><label for="pt-name">Display name (for new accounts)</label><input id="pt-name" autocomplete="name" placeholder="Your display name"></div>
+        <div class="btnrow"><button class="btn" id="pt-register">Create account</button><button class="btn light" id="pt-login">Log in</button><button class="btn light" id="pt-reset">Forgot password</button></div>
+      </div>
+      <div class="btnrow"><button class="btn light hidden" id="pt-logout">Log out</button><button class="btn hidden" id="pt-load-tasks">Load available tasks</button></div>
+      <p class="safe-note">PrimeTask will never ask you to share your email or other account password with a task provider.</p>
+    </section>
+
+    <section class="page active" id="page-home">
+      <div class="hero"><span class="tag">YOUR NEXT OPPORTUNITY</span><h2>Small tasks. Steady progress.</h2><p class="muted">Explore surveys, feedback and online task opportunities. Rewards are only added after a provider confirms completion.</p><button class="btn" data-go="tasks">Explore tasks</button></div>
+      <div class="stats">
+        <div class="stat"><span class="muted">Available balance</span><strong id="home-balance">—</strong></div>
+        <div class="stat"><span class="muted">Tasks completed</span><strong id="home-completed">Not connected</strong></div>
+        <div class="stat"><span class="muted">Pending rewards</span><strong id="home-pending">Not connected</strong></div>
+      </div>
+      <div class="panel"><h2>Recommended opportunities</h2><p class="muted">Real task availability depends on your country and eligibility.</p><div class="cards">
+        <article class="task"><h3>Paid surveys</h3><p class="muted">Share opinions through eligible survey providers.</p><span class="status-pill">Provider needed</span></article>
+        <article class="task"><h3>AI training</h3><p class="muted">Data labeling and evaluation tasks when work is available.</p><span class="status-pill">Provider needed</span></article>
+      </div></div>
+    </section>
+
+    <section class="page" id="page-tasks">
+      <div class="panel"><h2>Find tasks</h2><p class="muted">Tasks come from the connected provider. Read each task's terms before starting. Do not share passwords, one-time codes, or sensitive account access.</p><div class="btnrow"><button class="btn" id="pt-refresh-tasks">Refresh available tasks</button><span id="task-count" class="status-pill">Not loaded</span></div><div id="task-message" class="message" role="status" aria-live="polite">Sign in to load tasks.</div></div>
+      <div id="task-cards" class="cards"><div class="empty">Sign in, then load tasks to see current opportunities.</div></div>
+    </section>
+
+    <section class="page" id="page-wallet">
+      <div class="panel"><h2>Your wallet</h2><p class="muted">Only provider-confirmed rewards should be treated as earnings.</p><div class="stats"><div class="stat"><span class="muted">Available balance</span><strong id="wallet-balance">—</strong></div><div class="stat"><span class="muted">Transactions</span><strong id="wallet-history">Not connected</strong></div><div class="stat"><span class="muted">Withdrawal status</span><strong>Not configured</strong></div></div><div id="wallet-message" class="message">Sign in to check your wallet.</div><p class="safe-note">Withdrawal processing, including M-Pesa, is not enabled by this page. Do not promise payouts until a secure payout integration is tested.</p></div>
+    </section>
+
+    <section class="page" id="page-referrals">
+      <div class="panel"><h2>Referral programme</h2><p class="muted">Your account ID can be used as a temporary referral identifier, but referral tracking and rewards are not yet connected.</p><div class="field"><label for="ref-link">Referral link (for sharing)</label><input id="ref-link" readonly placeholder="Log in to generate your link"></div><button class="btn light" id="copy-ref">Copy referral link</button><div id="ref-message" class="message">Referral rewards are not enabled yet.</div></div>
+    </section>
+
+    <section class="page" id="page-membership">
+      <div class="panel"><h2>Membership plans</h2><p class="muted">Membership payments and entitlements are not configured yet. These options are informational and do not activate a paid plan.</p><div class="cards"><article class="task"><h3>Basic</h3><p>Browse eligible available tasks.</p><span class="status-pill">Not for sale yet</span></article><article class="task"><h3>Pro</h3><p>Plan benefits must be defined and implemented before sale.</p><span class="status-pill">Not for sale yet</span></article></div></div>
+    </section>
+
+    <section class="page" id="page-profile">
+      <div class="panel"><h2>Your profile</h2><p class="muted">Save the country used to request country-eligible tasks.</p><div class="field"><label for="pt-profile-name">Display name</label><input id="pt-profile-name" placeholder="Your display name" autocomplete="name"></div><div class="field"><label for="pt-profile-country">Country</label><select id="pt-profile-country"><option value="">Choose country</option><option>Kenya</option><option>South Africa</option><option>Tanzania</option><option>Uganda</option><option>United States</option><option>Canada</option><option>United Kingdom</option></select></div><button class="btn" id="pt-save-profile">Save preferences</button><div id="pt-profile-message" class="message" role="status" aria-live="polite">Log in to edit your profile.</div></div>
+    </section>
+
+    <footer>PrimeTask · Opportunities depend on eligibility and provider availability. Never pay anyone who promises guaranteed earnings. Never share account passwords or one-time security codes.</footer>
+  </main>
+</div>
+<nav class="mobile" aria-label="Mobile navigation"><button class="active" data-page="home">Home</button><button data-page="tasks">Tasks</button><button data-page="wallet">Wallet</button><button data-page="referrals">Referrals</button><button data-page="profile">Profile</button></nav>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(() => {
+  "use strict";
+
+  const SUPABASE_URL = "https://nvyeyauvfsylstpiaxbo.supabase.co";
+  // Use the exact Publishable key already configured in your existing index.html.
+  const SUPABASE_KEY = "sb_publishable_shOlSolThhN0_PGExOQucw_oeuVClUu";
+  const TASKS_FUNCTION = SUPABASE_URL + "/functions/v1/primetask-tasks";
+
+  const $ = id => document.getElementById(id);
+  const authMessage = text => {
+    const el = $("auth-message");
+    el.textContent = text;
+    el.className = "message" + (/failed|error|timed out|could not|unable/i.test(text) ? " error" : "");
+  };
+  const setMessage = (id, text, isError = false) => {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = text;
+    el.className = "message" + (isError ? " error" : "");
+  };
+  const money = amount => "$" + (Number.isFinite(Number(amount)) ? Number(amount).toFixed(2) : "0.00");
+  let db = null;
+  let currentUser = null;
+  let authListenerRegistered = false;
+  let tasksBusy = false;
+
+  const titles = {
+    home: "Welcome to PrimeTask", tasks: "Find tasks", wallet: "Your wallet",
+    referrals: "Referral programme", membership: "Membership plans", profile: "Your profile"
+  };
+
+  function showPage(page) {
+    if (!titles[page]) page = "home";
+    document.querySelectorAll(".page").forEach(section => section.classList.toggle("active", section.id === "page-" + page));
+    document.querySelectorAll("[data-page]").forEach(button => button.classList.toggle("active", button.dataset.page === page));
+    $("page-title").textContent = titles[page];
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  document.querySelectorAll("[data-page]").forEach(button => button.addEventListener("click", () => showPage(button.dataset.page)));
+  document.querySelectorAll("[data-go]").forEach(button => button.addEventListener("click", () => showPage(button.dataset.go)));
+  $("account-toggle").addEventListener("click", () => $("account-panel").scrollIntoView({ behavior: "smooth", block: "start" }));
+
+  function updateAuthUI(user) {
+    currentUser = user || null;
+    $("auth-fields").classList.toggle("hidden", !!currentUser);
+    $("pt-logout").classList.toggle("hidden", !currentUser);
+    $("pt-load-tasks").classList.toggle("hidden", !currentUser);
+    if (currentUser) {
+      authMessage("Logged in as " + (currentUser.email || "your account") + ".");
+      $("pt-profile-name").value = currentUser.user_metadata?.display_name || "";
+      $("pt-profile-country").value = currentUser.user_metadata?.country || "";
+      $("ref-link").value = window.location.origin + window.location.pathname + "?ref=" + encodeURIComponent(currentUser.id);
+      refreshWallet();
+    } else {
+      authMessage("Register or log in to access your account and tasks.");
+      $("home-balance").textContent = "—";
+      $("wallet-balance").textContent = "—";
+      $("wallet-history").textContent = "Not connected";
+      $("home-completed").textContent = "Not connected";
+      $("home-pending").textContent = "Not connected";
+      setMessage("wallet-message", "Sign in to check your wallet.");
+      setMessage("task-message", "Sign in to load tasks.");
+      $("ref-link").value = "";
+    }
+  }
+
+  async function start() {
+    if (!window.supabase || typeof window.supabase.createClient !== "function") {
+      authMessage("Could not load the Supabase library. Check your connection, then refresh.");
+      return;
+    }
+    try {
+      db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+        auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true }
+      });
+      authMessage("Connecting to Supabase...");
+      const { data, error } = await Promise.race([
+        db.auth.getSession(),
+        new Promise((_, reject) => window.setTimeout(() => reject(new Error("Session check timed out. Please refresh and try again.")), 10000))
+      ]);
+      if (error) throw error;
+      updateAuthUI(data.session?.user || null);
+      if (!authListenerRegistered) {
+        authListenerRegistered = true;
+        db.auth.onAuthStateChange((_event, session) => {
+          updateAuthUI(session?.user || null);
+        });
+      }
+    } catch (error) {
+      authMessage("Session check failed: " + (error?.message || "Unknown error"));
+    }
+  }
+
+  $("pt-register").addEventListener("click", async () => {
+    if (!db) return authMessage("Supabase is not ready yet. Refresh the page and try again.");
+    const email = $("pt-email").value.trim();
+    const password = $("pt-password").value;
+    const name = $("pt-name").value.trim();
+    if (!email || !password) return authMessage("Enter your email and password.");
+    if (password.length < 6) return authMessage("Use a password with at least 6 characters.");
+    try {
+      authMessage("Creating account...");
+      const { data, error } = await db.auth.signUp({ email, password, options: { data: { display_name: name } } });
+      if (error) throw error;
+      if (data.session?.user) updateAuthUI(data.session.user);
+      else authMessage("Registration submitted. Check your email if confirmation is required.");
+    } catch (error) {
+      authMessage("Registration failed: " + (error?.message || "Unknown error"));
+    }
+  });
+
+  $("pt-login").addEventListener("click", async () => {
+    if (!db) return authMessage("Supabase is not ready yet. Refresh the page and try again.");
+    const email = $("pt-email").value.trim();
+    const password = $("pt-password").value;
+    if (!email || !password) return authMessage("Enter your email and password first.");
+    try {
+      authMessage("Logging in...");
+      const { data, error } = await db.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      updateAuthUI(data.user);
+      await refreshWallet();
+    } catch (error) {
+      authMessage("Login failed: " + (error?.message || "Unknown error"));
+    }
+  });
+
+  $("pt-reset").addEventListener("click", async () => {
+    if (!db) return authMessage("Supabase is not ready yet. Refresh the page and try again.");
+    const email = $("pt-email").value.trim();
+    if (!email) return authMessage("Enter your email first.");
+    try {
+      authMessage("Requesting password recovery...");
+      const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin + window.location.pathname });
+      if (error) throw error;
+      authMessage("Recovery request sent if the account exists. Check your inbox and spam folder.");
+    } catch (error) {
+      authMessage("Recovery request failed: " + (error?.message || "Unknown error"));
+    }
+  });
+
+  $("pt-logout").addEventListener("click", async () => {
+    if (!db) return;
+    try {
+      const { error } = await db.auth.signOut();
+      if (error) throw error;
+      updateAuthUI(null);
+      authMessage("You are logged out.");
+      $("task-cards").replaceChildren();
+    } catch (error) {
+      authMessage("Logout failed: " + (error?.message || "Unknown error"));
+    }
+  });
+
+  async function refreshWallet() {
+    if (!db || !currentUser) return;
+    $("wallet-balance").textContent = "Loading...";
+    $("home-balance").textContent = "Loading...";
+    setMessage("wallet-message", "Checking your wallet...");
+    try {
+      const { data: wallet, error } = await db.from("wallets").select("balance").eq("user_id", currentUser.id).maybeSingle();
+      if (error) throw error;
+      if (!wallet) {
+        $("wallet-balance").textContent = "Not set up";
+        $("home-balance").textContent = "Not set up";
+        $("wallet-history").textContent = "No wallet record";
+        setMessage("wallet-message", "No wallet record was found. A secure backend must create one.");
+        return;
+      }
+      const balance = Number(wallet.balance ?? 0);
+      $("wallet-balance").textContent = money(balance);
+      $("home-balance").textContent = money(balance);
+      $("wallet-history").textContent = "History not connected";
+      setMessage("wallet-message", "Wallet balance loaded. Confirmed transaction history is not connected on this page.");
+    } catch (error) {
+      $("wallet-balance").textContent = "Unavailable";
+      $("home-balance").textContent = "Unavailable";
+      $("wallet-history").textContent = "Unavailable";
+      setMessage("wallet-message", "Could not load wallet: " + (error?.message || "Unknown error") + ". Check the wallets table and its Row Level Security policies.", true);
+    }
+  }
+  $("pt-refresh-wallet")?.addEventListener("click", refreshWallet);
+
+  function looksUnsafe(task) {
+    const text = [task.title, task.name, task.description, task.instructions, task.proof_text].filter(Boolean).join(" ").toLowerCase();
+    return /(send|submit|share|provide|give|must).{0,50}(password|passcode|one[- ]time code|2fa|verification code)/i.test(text)
+      || /(password|passcode|one[- ]time code|2fa|verification code).{0,50}(send|submit|share|provide|give)/i.test(text);
+  }
+
+  function renderTasks(tasks) {
+    const cards = $("task-cards");
+    cards.replaceChildren();
+    const safeTasks = tasks.filter(task => !looksUnsafe(task));
+    if (!safeTasks.length) {
+      const empty = document.createElement("div");
+      empty.className = "empty";
+      empty.textContent = tasks.length ? "No tasks passed the safety check. Unsafe tasks were hidden." : "No tasks are available for your country right now.";
+      cards.appendChild(empty);
+      return;
+    }
+    safeTasks.forEach(task => {
+      const card = document.createElement("article");
+      card.className = "task";
+      const title = document.createElement("h3");
+      title.textContent = task.title || task.name || "Available task";
+      const description = document.createElement("p");
+      description.className = "muted";
+      description.textContent = task.description || task.instructions || "Read provider details before starting.";
+      const reward = document.createElement("p");
+      reward.className = "reward";
+      reward.textContent = task.reward != null ? "Reward: " + task.reward : "Reward set by provider";
+      card.append(title, description, reward);
+      const taskUrl = task.url;
+      if (task.has_url && typeof taskUrl === "string" && /^https?:\/\//i.test(taskUrl)) {
+        const openButton = document.createElement("a");
+        openButton.href = taskUrl;
+        openButton.target = "_blank";
+        openButton.rel = "noopener noreferrer";
+        openButton.textContent = "Open Task";
+        openButton.className = "btn";
+        card.appendChild(openButton);
+      } else {
+        const note = document.createElement("p");
+        note.className = "muted small";
+        note.textContent = task.proof_text || task.instructions || "Follow the task instructions to complete this task.";
+        card.appendChild(note);
+      }
+      cards.appendChild(card);
+    });
+    if (safeTasks.length !== tasks.length) {
+      const warning = document.createElement("p");
+      warning.className = "message";
+      warning.textContent = (tasks.length - safeTasks.length) + " task(s) hidden because the instructions appeared to request passwords or security codes.";
+      cards.prepend(warning);
+    }
+  }
+
+  async function loadTasks() {
+    if (!db || !currentUser) {
+      setMessage("task-message", "Please log in before loading tasks.", true);
+      return;
+    }
+    if (tasksBusy) return;
+    tasksBusy = true;
+    const button = $("pt-load-tasks");
+    const refreshButton = $("pt-refresh-tasks");
+    if (button) button.disabled = true;
+    if (refreshButton) refreshButton.disabled = true;
+    setMessage("task-message", "Loading available tasks...");
+    try {
+      const { data: sessionData, error: sessionError } = await db.auth.getSession();
+      if (sessionError) throw sessionError;
+      const accessToken = sessionData.session?.access_token;
+      if (!accessToken) throw new Error("Please log in again to load tasks.");
+      const response = await fetch(TASKS_FUNCTION, {
+        method: "GET",
+        headers: { "Authorization": "Bearer " + accessToken, "apikey": SUPABASE_KEY }
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.error || result.message || "Task request failed (HTTP " + response.status + ").");
+      if (!Array.isArray(result.data)) throw new Error("Unexpected response from task provider.");
+      renderTasks(result.data);
+      $("task-count").textContent = result.data.length + " received";
+      setMessage("task-message", "Tasks received: " + result.data.length + ". Rewards are not credited until completion is verified by the provider.");
+    } catch (error) {
+      $("task-cards").replaceChildren();
+      setMessage("task-message", "Could not load tasks: " + (error?.message || "Unknown error"), true);
+    } finally {
+      tasksBusy = false;
+      if (button) button.disabled = false;
+      if (refreshButton) refreshButton.disabled = false;
+    }
+  }
+  $("pt-load-tasks").addEventListener("click", () => { showPage("tasks"); loadTasks(); });
+  $("pt-refresh-tasks").addEventListener("click", loadTasks);
+
+  $("pt-save-profile").addEventListener("click", async () => {
+    if (!db || !currentUser) return setMessage("pt-profile-message", "Please log in first.", true);
+    const displayName = $("pt-profile-name").value.trim();
+    const country = $("pt-profile-country").value;
+    if (!country) return setMessage("pt-profile-message", "Choose your country first.", true);
+    try {
+      setMessage("pt-profile-message", "Saving profile...");
+      const { error: authError } = await db.auth.updateUser({ data: { display_name: displayName, country } });
+      if (authError) throw authError;
+      const { error: profileError } = await db.from("profiles").upsert({ id: currentUser.id, country }, { onConflict: "id" });
+      if (profileError) throw profileError;
+      const { data } = await db.auth.getUser();
+      if (data.user) updateAuthUI(data.user);
+      setMessage("pt-profile-message", "Profile preferences saved.");
+    } catch (error) {
+      setMessage("pt-profile-message", "Could not fully save profile: " + (error?.message || "Unknown error") + ". Check profiles table permissions.", true);
+    }
+  });
+
+  $("copy-ref").addEventListener("click", async () => {
+    const link = $("ref-link").value;
+    if (!link) return setMessage("ref-message", "Log in to create your referral link.", true);
+    try {
+      await navigator.clipboard.writeText(link);
+      setMessage("ref-message", "Referral link copied. Referral tracking is not enabled yet.");
+    } catch (_) {
+      $("ref-link").select();
+      setMessage("ref-message", "Select and copy the link above. Referral tracking is not enabled yet.");
+    }
+  });
+
+  start();
+})();
+</script>
+</body>
+</html>
