@@ -474,7 +474,11 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
 </nav>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
+<script><script>
+window.onerror = function(message, source, line, column) {
+  alert("PrimeTask JavaScript error: " + message + " at line " + line);
+};
+</script>
 (() => {
   "use strict";
 
