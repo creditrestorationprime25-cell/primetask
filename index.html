@@ -674,7 +674,6 @@ if (
 cards.appendChild(card);
 });
       
-const sessionCheck = await db.auth.getSession();
     authMessage("Tasks loaded: " + result.data.length + ".");
     showPage("tasks");
   } catch (error) {
@@ -697,6 +696,7 @@ const sessionCheck = await db.auth.getSession();
     authMessage("Connecting to Supabase... Please wait.");
 console.log("PrimeTask startup reached Supabase session check");
 
+const sessionCheck = await db.auth.getSession();
 const { data, error } = sessionCheck;
 
     if (error) {
