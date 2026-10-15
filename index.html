@@ -696,8 +696,15 @@ cards.appendChild(card);
     authMessage("Connecting to Supabase... Please wait.");
 console.log("PrimeTask startup reached Supabase session check");
 
-const sessionCheck = await db.auth.getSession();
-const { data, error } = sessionCheck;
+const { data, error } = await Promise.race([
+  db.auth.getSession(),
+  new Promise((_, reject) =>
+    setTimeout(
+      () => reject(new Error("Session check timed out")),
+      8000
+    )
+  )
+]);
 
     if (error) {
       authMessage("Session check failed: " + error.message);
