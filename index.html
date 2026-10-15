@@ -639,17 +639,41 @@ $("pt-offerwall").addEventListener("click", async () => {
         description.className = "muted";
         description.textContent =
           task.description || task.instructions || "See provider details.";
+const reward = document.createElement("p");
+reward.textContent =
+  task.reward != null
+    ? "Reward: " + task.reward
+    : "Reward set by provider";
 
-        const reward = document.createElement("p");
-        reward.textContent =
-          task.reward != null
-            ? "Reward: " + task.reward
-            : "Reward set by provider";
+card.append(title, description, reward);
 
-        card.append(title, description, reward);
-        cards.appendChild(card);
-      });
-    }
+const taskUrl = task.url;
+
+if (
+  task.has_url &&
+  typeof taskUrl === "string" &&
+  /^https?:\/\//i.test(taskUrl)
+) {
+  const openButton = document.createElement("a");
+  openButton.href = taskUrl;
+  openButton.target = "_blank";
+  openButton.rel = "noopener noreferrer";
+  openButton.textContent = "Open Task";
+  openButton.className = "btn";
+  card.appendChild(openButton);
+} else {
+  const note = document.createElement("p");
+  note.className = "muted";
+  note.textContent =
+    task.proof_text ||
+    task.instructions ||
+    "Follow the task instructions to complete this task.";
+  card.appendChild(note);
+}
+
+cards.appendChild(card);
+});
+      
 
     authMessage("Tasks loaded: " + result.data.length + ".");
     showPage("tasks");
