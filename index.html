@@ -694,7 +694,8 @@ cards.appendChild(card);
 
     db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    authMessage("Connecting to Supabase...");
+    authMessage("Connecting to Supabase... Please wait.");
+console.log("PrimeTask startup reached Supabase session check");
 const sessionCheck = await Promise.race([
   db.auth.getSession(),
   new Promise((_, reject) =>
