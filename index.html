@@ -383,6 +383,31 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
         M-Pesa and bank payouts require a secure backend and a configured payout provider. This page does not send money.
       </div>
       <button class="btn light" id="pt-refresh-wallet">Refresh balance</button>
+<div class="field">
+  <label for="pt-withdraw-amount">Withdrawal amount (USD)</label>
+  <input id="pt-withdraw-amount" type="number" min="1" step="0.01" placeholder="Minimum $1">
+</div>
+
+<div class="field">
+  <label for="pt-withdraw-method">Payout method</label>
+  <select id="pt-withdraw-method">
+    <option value="">Choose payout method</option>
+    <option value="M-Pesa">M-Pesa</option>
+    <option value="PayPal">PayPal</option>
+    <option value="Skrill">Skrill</option>
+    <option value="Neteller">Neteller</option>
+    <option value="Bank">Bank transfer</option>
+  </select>
+</div>
+
+<div class="field">
+  <label for="pt-withdraw-details">Payout details</label>
+  <input id="pt-withdraw-details" type="text" maxlength="200" placeholder="Your account or payout details">
+</div>
+
+<button class="btn" id="pt-withdraw-submit">Request withdrawal</button>
+<p class="muted" id="pt-withdraw-message"></p>
+      
     </section>
 
     <section class="panel" id="referrals">
@@ -849,6 +874,58 @@ db.auth.onAuthStateChange((_event, session) => {
     }
   });
 
+$("pt-withdraw-submit").addEventListener("click", async () => {
+  const message = $("pt-withdraw-message");
+
+  if (!db || !currentUser) {
+    message.textContent = "Please log in first.";
+    return;
+  }
+
+  const amount = Number($("pt-withdraw-amount").value);
+  const method = $("pt-withdraw-method").value;
+  const details = $("pt-withdraw-details").value.trim();
+
+  if (!Number.isFinite(amount) || amount <= 0) {
+    message.textContent = "Enter a valid withdrawal amount.";
+    return;
+  }
+
+  if (!method || details.length < 3) {
+    message.textContent = "Choose a payout method and enter valid payout details.";
+    return;
+  }
+
+  const button = $("pt-withdraw-submit");
+  button.disabled = true;
+  message.textContent = "Submitting withdrawal request...";
+
+  try {
+    const { data, error } = await db.rpc("request_withdrawal", {
+      p_amount: amount,
+      p_payout_method: method,
+      p_payout_details: details
+    });
+
+    if (error) throw error;
+
+    message.textContent =
+      "Withdrawal request submitted. Reference: " + data;
+
+    $("pt-withdraw-amount").value = "";
+    $("pt-withdraw-method").value = "";
+    $("pt-withdraw-details").value = "";
+
+  if (typeof refreshWallet === "function") {
+  await refreshWallet();
+  }
+  } catch (error) {
+    message.textContent = "Withdrawal failed: " + error.message;
+  } finally {
+    button.disabled = false;
+  }
+});
+  
   start().catch(error => {
     authMessage("Supabase startup failed: " + error.message);
   });
