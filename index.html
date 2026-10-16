@@ -1152,6 +1152,8 @@ $("pt-withdraw-submit").addEventListener("click", async () => {
       if (session?.user && !recoveryMode) window.setTimeout(() => void refreshWallet(), 0);
     });
 
+if (data.session?.user) await loadReferralLink();
+  
     if (recoveryMode) {
       showPasswordRecovery();
     }
