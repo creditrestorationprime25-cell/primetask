@@ -1148,6 +1148,80 @@ $("pt-withdraw-submit").addEventListener("click", async () => {
     }
   }
 
+async function loadReferralLink() {
+  const input = document.getElementById("pt-referral-link");
+  const message = document.getElementById("pt-referral-message");
+  const copyButton = document.getElementById("pt-referral-copy");
+
+  if (!input || !message || !copyButton) return;
+
+  message.textContent = "Loading your referral link...";
+  copyButton.disabled = true;
+
+  try {
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    if (!sessionData.session) {
+      input.value = "";
+      message.textContent = "Please log in to get your referral link.";
+      return;
+    }
+
+    const { data: code, error } =
+      await db.rpc("get_my_referral_code");
+
+    if (error) throw error;
+    if (!code) throw new Error("No referral code returned.");
+
+    input.value =
+      window.location.origin +
+      window.location.pathname +
+      "?ref=" + encodeURIComponent(code);
+
+    message.textContent =
+      "Your referral link is ready to copy.";
+
+  } catch (error) {
+    console.error("Referral link error:", error);
+    message.textContent =
+      "Could not load your referral link. Please try again.";
+  } finally {
+    copyButton.disabled = false;
+  }
+}
+
+document.getElementById("pt-referral-copy")
+  ?.addEventListener("click", async () => {
+    const input = document.getElementById("pt-referral-link");
+    const message = document.getElementById("pt-referral-message");
+
+    if (!input?.value) {
+      message.textContent = "Load your referral link first.";
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(input.value);
+      message.textContent = "Referral link copied!";
+    } catch {
+      input.focus();
+      input.select();
+      message.textContent =
+        "Select and copy the link manually.";
+    }
+  });
+
+db.auth.onAuthStateChange((_event, session) => {
+  if (session?.user) {
+    window.setTimeout(() => loadReferralLink(), 0);
+  }
+});
+
+loadReferralLink();
+  
   start().catch(error => {
     authMessage("PrimeTask startup failed: " + errorText(error));
   });
