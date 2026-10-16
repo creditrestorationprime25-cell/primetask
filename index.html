@@ -942,51 +942,146 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
     }
   });
 
-  $("pt-withdraw-submit").addEventListener("click", async () => {
-    const message = $("pt-withdraw-message");
-    if (!db || !currentUser) {
-      message.textContent = "Please log in first.";
-      return;
-    }
-    if (withdrawalInProgress) return;
+  
+$("pt-withdraw-submit").addEventListener("click", async () => {
+  const message = $("pt-withdraw-message");
 
-    const amount = Number($("pt-withdraw-amount").value);
-    const method = $("pt-withdraw-method").value;
-    const details = $("pt-withdraw-details").value.trim();
-    if (!Number.isFinite(amount) || amount < 1) {
-      message.textContent = "Enter a valid withdrawal amount of at least $1.00.";
-      return;
-    }
-    if (!method || details.length < 3) {
-      message.textContent = "Choose a payout method and enter valid payout details.";
+  if (!db || !currentUser) {
+    message.textContent = "Please log in first.";
+    return;
+  }
+
+  if (withdrawalInProgress) return;
+
+  const amount = Number($("pt-withdraw-amount").value);
+  const method = $("pt-withdraw-method").value;
+  const details = $("pt-withdraw-details").value.trim();
+
+  if (!Number.isFinite(amount) || amount < 1) {
+    message.textContent =
+      "Enter a valid withdrawal amount of at least $1.00.";
+    return;
+  }
+
+  if (!method || details.length < 3) {
+    message.textContent =
+      "Choose a payout method and enter valid payout details.";
+    return;
+  }
+
+  const button = $("pt-withdraw-submit");
+  withdrawalInProgress = true;
+  button.disabled = true;
+
+  let requestCreated = false;
+  let requestId = "";
+
+  try {
+    // Verify the user's session before creating a request.
+    const { data: sessionData, error: sessionError } =
+      await db.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    const accessToken = sessionData?.session?.access_token;
+
+    if (!accessToken) {
+      message.textContent =
+        "Your session has expired. Please log in again.";
       return;
     }
 
-    const button = $("pt-withdraw-submit");
-    withdrawalInProgress = true;
-    button.disabled = true;
     message.textContent = "Submitting withdrawal request…";
-    try {
-      const { data, error } = await db.rpc("request_withdrawal", {
+
+    const { data: withdrawalId, error } = await db.rpc(
+      "request_withdrawal",
+      {
         p_amount: amount,
         p_payout_method: method,
         p_payout_details: details
-      });
-      if (error) throw error;
-      message.textContent = "Withdrawal request submitted. Reference: " + String(data ?? "received");
-      $("pt-withdraw-amount").value = "";
-      $("pt-withdraw-method").value = "";
-      $("pt-withdraw-details").value = "";
-      await refreshWallet();
-    } catch (error) {
-      message.textContent = "Withdrawal failed: " + errorText(error) +
-        ". This request only records a request; it does not transfer money automatically.";
-    } finally {
-      withdrawalInProgress = false;
-      button.disabled = false;
-    }
-  });
+      }
+    );
 
+    if (error) throw error;
+
+    if (
+      typeof withdrawalId !== "string" ||
+      !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(withdrawalId)
+    ) {
+      message.textContent =
+        "Could not verify the withdrawal reference. Check your withdrawal history before trying again.";
+      return;
+    }
+
+    requestId = withdrawalId;
+    requestCreated = true;
+
+    if (method !== "M-Pesa") {
+      message.textContent =
+        "Withdrawal request recorded. Reference: " +
+        requestId +
+        ". Automatic payout is not configured for this method.";
+      return;
+    }
+
+    message.textContent =
+      "Request recorded. Contacting the M-Pesa sandbox…";
+
+    const response = await fetch(
+      SUPABASE_URL + "/functions/v1/primetask-withdrawal",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + accessToken,
+          apikey: SUPABASE_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          withdrawal_id: requestId
+        })
+      }
+    );
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      message.textContent =
+        "Request recorded. Reference: " +
+        requestId +
+        ". Payout returned HTTP " +
+        response.status +
+        ": " +
+        (result.error || "Unknown error") +
+        ". Check this request before retrying.";
+      return;
+    }
+
+    message.textContent =
+      (result.message || "Payout request received.") +
+      " Reference: " +
+      requestId;
+
+    $("pt-withdraw-amount").value = "";
+    $("pt-withdraw-method").value = "";
+    $("pt-withdraw-details").value = "";
+
+  } catch (error) {
+    message.textContent = requestCreated
+      ? "Request recorded. Reference: " +
+        requestId +
+        ". Payout status may be unknown. Check it before retrying."
+      : "Withdrawal request failed: " + errorText(error);
+  } finally {
+    withdrawalInProgress = false;
+    button.disabled = false;
+
+    try {
+      await refreshWallet();
+    } catch (refreshError) {
+      console.error("Wallet refresh failed:", refreshError);
+    }
+  }
+});
   async function start() {
     if (!window.supabase || typeof window.supabase.createClient !== "function") {
       authMessage("Supabase JavaScript did not load. Check your connection, then reload this page.");
