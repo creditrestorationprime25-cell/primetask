@@ -736,7 +736,44 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
       const taskUrl = task.url || task.task_url || task.click_url || task.link;
       if (typeof taskUrl === "string" && /^https?:\/\//i.test(taskUrl)) {
         const openButton = document.createElement("a");
-        openButton.href = taskUrl;
+        openButton.href = "#";
+        openButton.addEventListener("click", async (event) => {
+  event.preventDefault();
+
+  try {
+    const { data: sessionData } = await supabase.auth.getSession();
+    const session = sessionData.session;
+
+    if (!session) {
+      alert("Please log in first.");
+      return;
+    }
+
+    const response = await fetch(
+      SUPABASE_URL + "/functions/v1/smooth-function",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + session.access_token,
+          "apikey": SUPABASE_KEY
+        },
+        body: JSON.stringify({})
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || !result.url) {
+      alert(result.error || "Could not open Offerwall.me.");
+      return;
+    }
+
+    window.open(result.url, "_blank");
+  } catch (error) {
+    alert("Connection failed. Please try again.");
+  }
+});
         openButton.target = "_blank";
         openButton.rel = "noopener noreferrer";
         openButton.textContent = "Open task";
