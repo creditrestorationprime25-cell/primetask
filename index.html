@@ -1249,7 +1249,7 @@ $("pt-withdraw-submit").addEventListener("click", async () => {
       showPasswordRecovery();
     }
 
-    authMessage("Connecting to Supabase... Please wait.");
+    authMessage("Checking Supabase session...");
       const { data, error } = await withTimeout(
         db.auth.getSession(),
         12000,
