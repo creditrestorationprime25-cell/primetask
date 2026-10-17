@@ -749,7 +749,7 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
   event.preventDefault();
 
   try {
-    const { data: sessionData } = await supabase.auth.getSession();
+    const { data: sessionData } = await db.auth.getSession();
     const session = sessionData.session;
 
     if (!session) {
