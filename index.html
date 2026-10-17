@@ -779,7 +779,8 @@ console.log("Opening smooth-function");
 
     window.open(result.url, "_blank");
   } catch (error) {
-    alert("Connection failed. Please try again.");
+    alert("Connection failed: " + (error?.message || String(error)));
+console.error("Open task error:", error);
   }
 });
         openButton.target = "_blank";
