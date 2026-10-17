@@ -1185,10 +1185,7 @@ $("pt-withdraw-submit").addEventListener("click", async () => {
       if (!recoveryMode) {
         updateAuthUI(data.session?.user || null);
         if (data.session?.user) await refreshWallet();
-      }if (!recoveryMode) {
-  updateAuthUI(data.session?.user || null);
-  if (data.session?.user) await refreshWallet();
-  if (data.session?.user) await loadReferralLink();
+    
   }
     } catch (error) {
       authMessage("Could not connect to Supabase: " + errorText(error) + ". Check the project URL/key and Supabase availability.");
