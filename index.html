@@ -1169,7 +1169,8 @@ $("pt-withdraw-submit").addEventListener("click", async () => {
       await refreshWallet();
     } catch (refreshError) {
       console.error("Wallet refresh failed:", refreshEr toror);
-    }
+  }
+});
   $("pt-mpesa-check").addEventListener("click", async () => {
   const button = $("pt-mpesa-check");
   const message = $("pt-mpesa-check-message");
