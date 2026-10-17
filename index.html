@@ -419,7 +419,8 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
 
 <button class="btn" id="pt-withdraw-submit">Request withdrawal</button>
 <p class="muted" id="pt-withdraw-message"></p>
-      
+ <button class="btn light" id="pt-mpesa-check" type="button">Test M-Pesa connection</button>
+<p class="muted" id="pt-mpesa-check-message"></p>     
     </section>
 
 
@@ -1167,8 +1168,58 @@ $("pt-withdraw-submit").addEventListener("click", async () => {
     try {
       await refreshWallet();
     } catch (refreshError) {
-      console.error("Wallet refresh failed:", refreshError);
+      console.error("Wallet refresh failed:", refreshEr toror);
     }
+  $("pt-mpesa-check").addEventListener("click", async () => {
+  const button = $("pt-mpesa-check");
+  const message = $("pt-mpesa-check-message");
+
+  if (!db || !currentUser) {
+    message.textContent = "Please log in first.";
+    return;
+  }
+
+  button.disabled = true;
+  message.textContent = "Testing database access safely…";
+
+  try {
+    const { data, error } = await db.auth.getSession();
+    if (error) throw error;
+
+    const token = data.session?.access_token;
+    if (!token) throw new Error("Please log in again.");
+
+    const response = await fetch(
+      SUPABASE_URL + "/functions/v1/primetask-withdrawal",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + token,
+          apikey: SUPABASE_KEY,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          withdrawal_id: "00000000-0000-0000-0000-000000000000"
+        })
+      }
+    );
+
+    const result = await response.json().catch(() => ({}));
+
+    if (response.status === 404) {
+      message.textContent =
+        "Database read passed. No payout was sent.";
+    } else {
+      message.textContent =
+        "HTTP " + response.status + ": " +
+        (result.error || result.message || "Check function response.");
+    }
+  } catch (error) {
+    message.textContent = "Test failed: " + errorText(error);
+  } finally {
+    button.disabled = false;
+  }
+});
   }
 });
   async function start() {
