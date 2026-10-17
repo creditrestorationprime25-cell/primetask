@@ -696,9 +696,32 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
       const balance = Number(wallet?.balance ?? 0);
       $("pt-wallet-balance").textContent = money(balance);
       $("pt-home-balance").textContent = money(balance);
-      $("pt-wallet-history").textContent = wallet
-        ? "Wallet balance loaded. Transaction history is not connected to this screen yet."
-        : "No wallet record was found for this account. A backend must create a wallet row for each user.";
+    const { data: withdrawals, error: historyError } = await db
+  .from("withdrawal_requests")
+  .select("id, amount, currency, payout_method, payout_status, created_at")
+  .eq("user_id", currentUser.id)
+  .order("created_at", { ascending: false })
+  .limit(10);
+
+if (historyError) throw historyError;
+
+const history = $("pt-wallet-history");
+history.textContent = "";
+
+if (!withdrawals || withdrawals.length === 0) {
+  history.textContent = "No withdrawal requests found.";
+} else {
+  withdrawals.forEach((item) => {
+    const row = document.createElement("p");
+    const date = item.created_at
+      ? new Date(item.created_at).toLocaleDateString()
+      : "";
+    row.textContent =
+      `${item.currency || "USD"} ${Number(item.amount).toFixed(2)} — ` +
+      `${item.payout_method || "Payout"} — ${item.payout_status || "pending"} — ${date}`;
+    history.appendChild(row);
+  });
+}
     } catch (error) {
       $("pt-wallet-balance").textContent = "Unavailable";
       $("pt-home-balance").textContent = "Unavailable";
