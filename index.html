@@ -1268,11 +1268,12 @@ try {
   updateAuthUI(result.data.session?.user || null);
   authMessage("Supabase session check completed.");
 
-} catch (error) {
-  console.error("Session diagnostic:", error);
-  authMessage("ERROR: " + (error?.message || String(error)));
+  } catch (error) {
+    console.error("Session diagnostic:", error);
+    authMessage("ERROR: " + (error?.message || String(error)));
   }
-  }  
+}
+
 async function loadReferralLink() {
   const input = document.getElementById("pt-referral-link");
   const message = document.getElementById("pt-referral-message");
