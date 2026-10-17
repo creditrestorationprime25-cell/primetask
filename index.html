@@ -1248,37 +1248,31 @@ $("pt-withdraw-submit").addEventListener("click", async () => {
     if (recoveryMode) {
       showPasswordRecovery();
     }
-  authMessage("Checking Supabase session...");
-
-  try {
-    const { data, error } = await Promise.race([
-      db.auth.getSession(),
-      new Promise((_, reject) =>
-        setTimeout(
-          () => reject(new Error("Supabase session check timed out")),
-          12000
-        )
-      )
-    ]);
-
-    if (error) throw error;
-
-    if (!recoveryMode) {
-      updateAuthUI(data.session?.user || null);
-
-      if (data.session?.user) {
-        await refreshWallet();
-      }
-    }
   
-} catch (error) {
-  console.error("Supabase session check failed:", error);
-  authMessage(
-    "Session check failed: " +
-    (error?.message || String(error))
-  );
-  }
 
+authMessage("Testing Supabase connection...");
+
+try {
+  const result = await Promise.race([
+    db.auth.getSession(),
+    new Promise((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Session request timed out after 12 seconds")),
+        12000
+      )
+    )
+  ]);
+
+  if (result.error) throw result.error;
+
+  updateAuthUI(result.data.session?.user || null);
+  authMessage("Supabase session check completed.");
+
+} catch (error) {
+  console.error("Session diagnostic:", error);
+  authMessage("ERROR: " + (error?.message || String(error)));
+  }
+    
 async function loadReferralLink() {
   const input = document.getElementById("pt-referral-link");
   const message = document.getElementById("pt-referral-message");
