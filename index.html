@@ -1,4 +1,4 @@
-use
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1169,6 +1169,7 @@ $("pt-withdraw-submit").addEventListener("click", async () => {
       await refreshWallet();
     } catch (refreshError) {
       console.error("Wallet refresh failed:", refreshError);
+    } 
   }
 });
   $("pt-mpesa-check").addEventListener("click", async () => {
@@ -1220,8 +1221,7 @@ $("pt-withdraw-submit").addEventListener("click", async () => {
   } finally {
     button.disabled = false;
   }
-});
-  }
+
 });
   async function start() {
     if (!window.supabase || typeof window.supabase.createClient !== "function") {
