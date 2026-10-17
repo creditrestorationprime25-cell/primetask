@@ -628,21 +628,29 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
   // The task endpoint reads profiles.country, so save the country there as well as in auth metadata.
   // This expects public.profiles to use id = auth.users.id and a country column, with user-owned RLS.
   async function upsertCountryProfile(country) {
-    if (!db || !currentUser) throw new Error("Please log in first.");
-    const cleanCountry = String(country || "").trim();
-    if (!cleanCountry) throw new Error("Choose your country first.");
-
-    const { error: profileError } = await db
-      .from("profiles")
-      .upsert({ id: currentUser.id, country: cleanCountry }, { onConflict: "id" });
-    if (profileError) {
-      throw new Error(
-        "The country could not be saved to public.profiles: " + errorText(profileError) +
-        ". The profiles table must have an id column matching the authenticated user ID, a country column, and an RLS policy allowing users to insert/update their own row."
-      );
-    }
-    syncCountryFields(cleanCountry);
+  if (!db || !currentUser) {
+    throw new Error("Please log in first.");
   }
+
+  const cleanCountry = String(country || "").trim();
+  if (!cleanCountry) {
+    throw new Error("Choose your country first.");
+  }
+
+  const { error } = await db
+    .from("profiles")
+    .upsert(
+      { id: currentUser.id, country: cleanCountry },
+      { onConflict: "id" }
+    );
+
+  if (error) {
+    throw new Error("Could not save country: " + error.message);
+  }
+
+  syncCountryFields(cleanCountry);
+  }
+  
 
   async function saveCountryToProfile(country) {
     if (!db || !currentUser) throw new Error("Please log in first.");
