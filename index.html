@@ -1,4 +1,4 @@
-
+use
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1248,23 +1248,35 @@ $("pt-withdraw-submit").addEventListener("click", async () => {
     if (recoveryMode) {
       showPasswordRecovery();
     }
+  authMessage("Checking Supabase session...");
 
-    authMessage("Checking Supabase session...");
-      const { data, error } = await withTimeout(
-        db.auth.getSession(),
-        12000,
-        "Supabase session check timed out. Reload the page and try again."
-      );
-      if (error) throw error;
-      if (!recoveryMode) {
-        updateAuthUI(data.session?.user || null);
-        if (data.session?.user) await refreshWallet();
-    
-  }
-    } catch (error) {
-      authMessage("Could not connect to Supabase: " + errorText(error) + ". Check the project URL/key and Supabase availability.");
+  try {
+    const { data, error } = await Promise.race([
+      db.auth.getSession(),
+      new Promise((_, reject) =>
+        setTimeout(
+          () => reject(new Error("Supabase session check timed out")),
+          12000
+        )
+      )
+    ]);
+
+    if (error) throw error;
+
+    if (!recoveryMode) {
+      updateAuthUI(data.session?.user || null);
+
+      if (data.session?.user) {
+        await refreshWallet();
+      }
     }
-  }
+  } catch (error) {
+    console.error("Supabase session check failed:", error);
+    authMessage(
+      "Login check failed. Refresh the page and try again."
+    );
+    }
+
 
 async function loadReferralLink() {
   const input = document.getElementById("pt-referral-link");
