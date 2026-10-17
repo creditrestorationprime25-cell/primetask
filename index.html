@@ -1270,13 +1270,14 @@ $("pt-withdraw-submit").addEventListener("click", async () => {
         await refreshWallet();
       }
     }
-  } catch (error) {
-    console.error("Supabase session check failed:", error);
-    authMessage(
-      "Login check failed. Refresh the page and try again."
-    );
-    }
-
+  
+} catch (error) {
+  console.error("Supabase session check failed:", error);
+  authMessage(
+    "Session check failed: " +
+    (error?.message || String(error))
+  );
+  }
 
 async function loadReferralLink() {
   const input = document.getElementById("pt-referral-link");
