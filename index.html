@@ -771,7 +771,9 @@ if (!history) throw new Error("Wallet history element is missing from the page."
       $("pt-wallet-balance").textContent = "Unavailable";
       $("pt-home-balance").textContent = "Unavailable";
       $("pt-wallet-history").textContent =
-  "Could not load wallet or reward history: " + errorText(error);
+  "Could not load wallet or reward history: " +
+  (error?.message || String(error)) +
+  " | " + (error?.stack || "No stack trace available");
     } finally {
       walletRequestInProgress = false;
     }
