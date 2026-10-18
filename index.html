@@ -695,7 +695,9 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
       if (error) throw error;
 
       const balance = Number(wallet?.balance ?? 0);
-      $("pt-wallet-balance").textContent = money(balance);
+      const balanceElement = $("pt-wallet-balance");
+if (!balanceElement) throw new Error("Missing HTML element: pt-wallet-balance");
+balanceElement.textContent = money(balance);
       $("pt-home-balance").textContent = money(balance);
       
       const { data: pendingRows, error: pendingError } = await db
