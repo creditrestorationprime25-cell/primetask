@@ -697,38 +697,53 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
       const balance = Number(wallet?.balance ?? 0);
       $("pt-wallet-balance").textContent = money(balance);
       $("pt-home-balance").textContent = money(balance);
-    const { data: withdrawals, error: historyError } = await db
-  .from("withdrawal_requests")
-  .select("id, amount, currency, payout_method, payout_status, created_at")
-  .eq("user_id", currentUser.id)
-  .order("created_at", { ascending: false })
-  .limit(10);
+    
+      const { data: rewards, error: historyError } = await db
+        .from("wallet_transactions")
+        .select("amount, currency, transaction_type, reference, created_at")
+        .eq("user_id", currentUser.id)
+        .eq("transaction_type", "offerwall_reward")
+        .order("created_at", { ascending: false })
+        .limit(10);
 
-if (historyError) throw historyError;
+      if (historyError) throw historyError;
 
-const history = $("pt-wallet-history");
-history.textContent = "";
+      const history = $("pt-wallet-history");
+      history.replaceChildren();
 
-if (!withdrawals || withdrawals.length === 0) {
-  history.textContent = "No withdrawal requests found.";
-} else {
-  withdrawals.forEach((item) => {
-    const row = document.createElement("p");
-    const date = item.created_at
-      ? new Date(item.created_at).toLocaleDateString()
-      : "";
-    row.textContent =
-      `${item.currency || "USD"} ${Number(item.amount).toFixed(2)} — ` +
-      `${item.payout_method || "Payout"} — ${item.payout_status || "pending"} — ${date}`;
-    history.appendChild(row);
-  });
-}
+      const heading = document.createElement("h3");
+      heading.textContent = "Offerwall reward history";
+      history.appendChild(heading);
+
+      if (!rewards || rewards.length === 0) {
+        const empty = document.createElement("p");
+        empty.textContent = "No verified rewards found yet.";
+        history.appendChild(empty);
+      } else {
+        rewards.forEach((item) => {
+          const row = document.createElement("p");
+          const date = item.created_at
+            ? new Date(item.created_at).toLocaleString()
+            : "";
+
+          row.textContent =
+            `${item.currency || "USD"} ${Number(item.amount).toFixed(2)}` +
+            ` — Verified reward — ${date}`;
+
+          if (item.reference) {
+            row.title = "Reference: " + item.reference;
+          }
+
+          history.appendChild(row);
+        });
+      }
+      
+
     } catch (error) {
       $("pt-wallet-balance").textContent = "Unavailable";
       $("pt-home-balance").textContent = "Unavailable";
       $("pt-wallet-history").textContent =
-        "Could not load wallet: " + errorText(error) +
-        ". Check that public.wallets has a user_id and balance column and that its RLS policy allows this user to read their own row.";
+  "Could not load wallet or reward history: " + errorText(error);
     } finally {
       walletRequestInProgress = false;
     }
