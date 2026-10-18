@@ -1296,8 +1296,8 @@ async function loadReferralLink() {
       return;
     }
 
-    const { data: code, error } =
-      await db.rpc("get_my_referral_code");
+    const { data: code, error } = await db.rpc("get_my_referral_code");
+if (error) throw new Error(error.message);
 
     if (error) throw error;
     if (!code) throw new Error("No referral code returned.");
