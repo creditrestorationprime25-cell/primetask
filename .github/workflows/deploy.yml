@@ -1,34 +1,37 @@
 name: Deploy PrimeTask Edge Functions
 
 on:
-workflow_dispatch:
-push:
-branches:
-- main
-paths:
-- 'supabase/functions/**'
-- '.github/workflows/deploy.yml'
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/functions/**"
+      - ".github/workflows/deploy.yml"
+
+permissions:
+  contents: read
 
 jobs:
-deploy:
-runs-on: ubuntu-latest
-steps:
-- name: Checkout repository
-uses: actions/checkout@v4
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  - name: Setup Supabase CLI
-    uses: supabase/setup-cli@v1
-    with:
-      version: 2.39.2
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v3
+        with:
+          version: 2.84.2
 
-  - name: Deploy PrimeTask Tasks
-    run: supabase functions deploy primetask-tasks --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
-    env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+      - name: Deploy PrimeTask Tasks
+        run: supabase functions deploy primetask-tasks --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
 
-  - name: Deploy PrimeTask Withdrawal
-    run: supabase functions deploy primetask-withdrawal --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
-    env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+      - name: Deploy PrimeTask Withdrawal
+        run: supabase functions deploy primetask-withdrawal --project-ref "$SUPABASE_PROJECT_REF" --no-verify-jwt
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
