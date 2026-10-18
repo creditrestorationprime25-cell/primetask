@@ -1310,12 +1310,11 @@ if (error) throw new Error(error.message);
     message.textContent =
       "Your referral link is ready to copy.";
 
-  } catch (error) {
-    console.error("Referral link error:", error);
-    message.textContent =
-      "Could not load your referral link. Please try again.";
-  } finally {
-    copyButton.disabled = false;
+} catch (error) {
+  console.error("Referral link error:", error);
+  message.textContent = "Referral error: " + (error?.message || String(error));
+} finally {
+  copyButton.disabled = false;
   }
 }
 
