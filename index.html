@@ -736,6 +736,7 @@ $("#pt-lifetime-verified").textContent = money(lifetimeVerified);
       if (historyError) throw historyError;
 
       const history = $("pt-wallet-history");
+if (!history) throw new Error("Wallet history element is missing from the page.");
       history.replaceChildren();
 
       const heading = document.createElement("h3");
