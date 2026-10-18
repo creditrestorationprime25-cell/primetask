@@ -711,8 +711,9 @@ if (pendingError) throw pendingError;
 const pendingAmount = (pendingRows || [])
   .reduce((sum, item) => sum + Number(item.amount || 0), 0);
 
-$("#pt-pending-withdrawals").textContent = money(pendingAmount);
-
+const pendingElement = $("pt-pending-withdrawals");
+if (!pendingElement) throw new Error("Missing HTML element: pt-pending-withdrawals");
+pendingElement.textContent = money(pendingAmount);
 const { data: lifetimeRows, error: lifetimeError } = await db
   .from("wallet_transactions")
   .select("amount")
