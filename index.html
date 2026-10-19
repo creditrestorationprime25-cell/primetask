@@ -736,7 +736,7 @@ lifetimeElement.textContent = money(lifetimeVerified);
         .eq("user_id", currentUser.id)
         .eq("transaction_type", "offerwall_reward")
         .order("created_at", { ascending: false })
-        .limit(10);
+        .limit(10); up
 
       if (historyError) throw historyError;
 
@@ -1156,56 +1156,19 @@ console.error("Open task error:", error);
     requestId = withdrawalId;
     requestCreated = true;
 
-    if (method !== "M-Pesa") {
-      message.textContent =
-        "Withdrawal request recorded. Reference: " +
-        requestId +
-        ". Automatic payout is not configured for this method.";
-      return;
-    }
+ 
+message.textContent =
+  "Withdrawal request submitted for manual review. Reference: " +
+  requestId +
+  ". Payment is not automatic. Please wait for review.";
 
-    message.textContent =
-      "Request recorded. Contacting the M-Pesa sandbox…";
+$("#pt-withdraw-amount").value = "";
+$("#pt-withdraw-method").value = "";
+$("#pt-withdraw-details").value = "";
+ return;
 
-    const response = await fetch(
-      SUPABASE_URL + "/functions/v1/primetask-withdrawal",
-      {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + accessToken,
-          apikey: SUPABASE_KEY,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          withdrawal_id: requestId
-        })
-      }
-    );
-
-    const result = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      message.textContent =
-        "Request recorded. Reference: " +
-        requestId +
-        ". Payout returned HTTP " +
-        response.status +
-        ": " +
-        (result.error || "Unknown error") +
-        ". Check this request before retrying.";
-      return;
-    }
-
-    message.textContent =
-      (result.message || "Payout request received.") +
-      " Reference: " +
-      requestId;
-
-    $("pt-withdraw-amount").value = "";
-    $("pt-withdraw-method").value = "";
-    $("pt-withdraw-details").value = "";
-
-  } catch (error) {
+} catch (error) {
+  
     message.textContent = requestCreated
       ? "Request recorded. Reference: " +
         requestId +
