@@ -736,7 +736,7 @@ lifetimeElement.textContent = money(lifetimeVerified);
         .eq("user_id", currentUser.id)
         .eq("transaction_type", "offerwall_reward")
         .order("created_at", { ascending: false })
-        .limit(10); up
+        .limit(10);
 
       if (historyError) throw historyError;
 
