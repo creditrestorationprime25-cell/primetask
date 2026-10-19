@@ -1082,8 +1082,8 @@ console.error("Open task error:", error);
     }
   });
 
-  
-$("pt-withdraw-submit").addEventListener("click", async () => {
+  const withdrawSubmitButton = $("pt-withdraw-submit"); if (withdrawSubmitButton) withdrawSubmitButton.addEventListener("click", async () => {
+
   const message = $("pt-withdraw-message");
 
   if (!db || !currentUser) {
