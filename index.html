@@ -1184,7 +1184,7 @@ $("#pt-withdraw-details").value = "";
     } 
   }
 });
-  $("pt-mpesa-check").addEventListener("click", async () => {
+  const mpesaCheckButton = $("pt-mpesa-check"); if (mpesaCheckButton) mpesaCheckButton.addEventListener("click", async () => {
   const button = $("pt-mpesa-check");
   const message = $("pt-mpesa-check-message");
 
@@ -1234,7 +1234,7 @@ $("#pt-withdraw-details").value = "";
     button.disabled = false;
   }
 
-});
+  });
   async function start() {
     if (!window.supabase || typeof window.supabase.createClient !== "function") {
       authMessage("Supabase JavaScript did not load. Check your connection, then reload this page.");
