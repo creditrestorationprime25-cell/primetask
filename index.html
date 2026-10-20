@@ -1265,6 +1265,8 @@ async function loadReferralLink() {
     if (sessionError) throw sessionError;
 
     if (!sessionData.session) {
+  throw new Error("No active session. Please log out and log in again.");
+    }
       input.value = "";
       message.textContent = "Please log in to get your referral link.";
       return;
