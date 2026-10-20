@@ -299,7 +299,7 @@
       reward.textContent = task.reward != null ? "Reward: " + task.reward : "Reward set by provider";
       card.append(title, description, reward);
       const taskUrl = task.url;
-      if (task.has_url && typeof taskUrl === "string" && /^https?:\/\//i.test(taskUrl)) {
+      if (typeof taskUrl === "string" && /^https?:\/\//i.test(taskUrl)) {
         const openButton = document.createElement("a");
         openButton.href = taskUrl;
         openButton.target = "_blank";
