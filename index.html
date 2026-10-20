@@ -504,7 +504,32 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
   <button data-page="referrals">Referrals</button>
   <button data-page="profile">Profile</button>
 </nav>
+<script>
+(function () {
+  function showStatus(message) {
+    var el = document.getElementById("auth-message");
+    if (el) el.textContent = message;
+  }
 
+  showStatus("PrimeTask: checking JavaScript startup...");
+
+  window.addEventListener("error", function (event) {
+    showStatus(
+      "JavaScript error: " +
+      (event.message || "Unknown error") +
+      " — line " + (event.lineno || "unknown")
+    );
+  });
+
+  window.addEventListener("unhandledrejection", function (event) {
+    var reason = event.reason;
+    showStatus(
+      "Startup error: " +
+      (reason && reason.message ? reason.message : String(reason))
+    );
+  });
+})();
+</script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onerror="this.onerror=null;this.src='https://unpkg.com/@supabase/supabase-js@2';"></script>
 <script>
 (() => {
