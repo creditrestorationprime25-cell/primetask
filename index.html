@@ -1323,10 +1323,11 @@ document.getElementById("pt-referral-copy")
   });
 
   
-  start().catch(error => {
-    authMessage("PrimeTask startup failed: " + errorText(error));
-  });
-})();
+  start().then(() => {
+  loadReferralLink();
+}).catch(error => {
+  authMessage("PrimeTask startup failed: " + errorText(error));
+});
 </script>
 </body>
 </html>
