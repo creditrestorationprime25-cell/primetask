@@ -1289,41 +1289,40 @@ async function loadReferralLink() {
 
     if (sessionError) throw sessionError;
 
-  if (!sessionData.session) {
-  throw new Error("No active session. Please log out and log in again.");
-}
+    if (!sessionData.session) {
+      input.value = "";
+      message.textContent = "Please log in to get your referral link.";
+      return;
+    }
 
-const { data: code, error } = await db.rpc("get_my_referral_code");
+    const { data: code, error } =
+      await db.rpc("get_my_referral_code");
 
-if (error) {
-  throw new Error(
-    "Referral code request failed: " +
-    (error.message || JSON.stringify(error))
-  );
-}
+    if (error) {
+      throw new Error(
+        "Referral code request failed: " +
+        (error.message || JSON.stringify(error))
+      );
+    }
 
-if (!code) {
-  throw new Error("No referral code returned by Supabase.");
-}
+    if (!code) {
+      throw new Error("No referral code returned by Supabase.");
+    }
 
-input.value =
-  window.location.origin +
-  window.location.pathname +
-  "?ref=" + encodeURIComponent(code);
+    input.value =
+      window.location.origin +
+      window.location.pathname +
+      "?ref=" + encodeURIComponent(code);
 
-message.textContent = "Your referral link is ready to copy.";
-} catch (error) {
-  console.error("Referral link error:", error);
-  message.textContent = "Referral error: " + (error?.message || String(error));
-} finally {
-  copyButton.disabled = false;
-}
-}
-  message.textContent = "Referral error: " + (error?.message || String(error));
-} finally {
-  copyButton.disabled = false;
+    message.textContent = "Your referral link is ready to copy.";
+  } catch (error) {
+    console.error("Referral link error:", error);
+    message.textContent =
+      "Referral error: " + (error?.message || String(error));
+  } finally {
+    copyButton.disabled = false;
   }
-}
+  }
 
 document.getElementById("pt-referral-copy")
   ?.addEventListener("click", async () => {
