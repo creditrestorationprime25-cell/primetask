@@ -1313,26 +1313,7 @@ input.value =
 
 message.textContent = "Your referral link is ready to copy.";
 
-    const { data: code, error } = await db.rpc("get_my_referral_code");
 
-if (error) {
-  throw new Error(
-    "Referral code request failed: " +
-    (error.message || JSON.stringify(error))
-  );
-}
-
-if (!code) {
-  throw new Error("No referral code returned by Supabase.");
-}
-
-    input.value =
-      window.location.origin +
-      window.location.pathname +
-      "?ref=" + encodeURIComponent(code);
-
-    message.textContent =
-      "Your referral link is ready to copy.";
 
 } catch (error) {
   console.error("Referral link error:", error);
