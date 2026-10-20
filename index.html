@@ -1271,10 +1271,17 @@ async function loadReferralLink() {
     }
 
     const { data: code, error } = await db.rpc("get_my_referral_code");
-if (error) throw new Error(error.message);
 
-    if (error) throw error;
-    if (!code) throw new Error("No referral code returned.");
+if (error) {
+  throw new Error(
+    "Referral code request failed: " +
+    (error.message || JSON.stringify(error))
+  );
+}
+
+if (!code) {
+  throw new Error("No referral code returned by Supabase.");
+}
 
     input.value =
       window.location.origin +
