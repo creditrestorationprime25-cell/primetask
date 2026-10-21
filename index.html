@@ -511,7 +511,106 @@ body {
     transition:none!important;
   }
 }
-}</style>
+/* PrimeTask Floating Glass Wallet */
+.pt-float-wallet {
+  display: grid;
+  grid-template-columns: minmax(130px, .8fr) minmax(0, 1.2fr);
+  gap: 20px;
+  align-items: center;
+  padding: 22px;
+  margin-bottom: 20px;
+  border: 1px solid #fff;
+  border-radius: 26px;
+  background: linear-gradient(135deg, #fffdf8, #eaf2ff, #fff5e7);
+  box-shadow: 0 14px 35px #23365312;
+  overflow: hidden;
+}
+
+.pt-hourglass {
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  border-radius: 24px;
+  background: radial-gradient(circle, #d8eaff, #fff 68%);
+  border: 1px solid #fff;
+  box-shadow: inset 0 0 25px #75aaff30;
+}
+
+.pt-hourglass span {
+  font-size: 90px;
+}
+
+.pt-balance-stack {
+  display: grid;
+  gap: 13px;
+}
+
+.pt-float-card {
+  padding: 16px;
+  border: 1px solid #ffffffed;
+  border-radius: 19px;
+  background: linear-gradient(120deg, #ffffffed, #e4efffdf);
+  box-shadow: 0 10px 22px #29456c18;
+  animation: pt-float 4s ease-in-out infinite;
+}
+
+.pt-float-card:nth-child(2) {
+  background: linear-gradient(120deg, #fffdf6, #f5ead8);
+  animation-delay: .5s;
+}
+
+.pt-float-card:nth-child(3) {
+  background: linear-gradient(120deg, #fff, #eee7ff);
+  animation-delay: 1s;
+}
+
+.pt-float-card small {
+  color: #64738b;
+  display: block;
+}
+
+.pt-float-card strong {
+  display: block;
+  margin-top: 7px;
+  font-size: 23px;
+  color: #233653;
+  overflow-wrap: anywhere;
+}
+
+@keyframes pt-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@media (max-width: 520px) {
+  .pt-float-wallet {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 15px;
+  }
+
+  .pt-hourglass {
+    min-height: 115px;
+  }
+
+  .pt-hourglass span {
+    font-size: 65px;
+  }
+
+  .pt-balance-stack {
+    gap: 9px;
+  }
+
+  .pt-float-card {
+    padding: 13px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-float-card {
+    animation: none;
+  }
+  }}</style>
 </head>
 
 <body>
