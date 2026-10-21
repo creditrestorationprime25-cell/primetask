@@ -657,6 +657,135 @@ body {
     font-size: 65px !important;
   }
 }
+  /* PrimeTask Android mobile layout fix */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.layout, .main, .panel, .account,
+.pt-float-wallet, .hero, .cards, .stats {
+  min-width: 0;
+  max-width: 100%;
+}
+
+img, video, iframe {
+  max-width: 100%;
+}
+
+@media (max-width: 780px) {
+  .layout {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
+  .main {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    padding: 14px 12px 100px;
+  }
+
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .top > div {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .top h1 {
+    overflow-wrap: anywhere;
+    font-size: clamp(21px, 5.5vw, 28px);
+  }
+
+  .top button {
+    flex-shrink: 0;
+  }
+
+  .panel, .account {
+    width: 100%;
+    min-width: 0;
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .hero {
+    width: 100%;
+    min-width: 0;
+    padding: 20px 16px;
+    overflow: hidden;
+  }
+
+  .hero h2 {
+    overflow-wrap: anywhere;
+    font-size: clamp(21px, 5.5vw, 27px);
+  }
+
+  .hero p {
+    overflow-wrap: anywhere;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: 100%;
+  }
+
+  .task, .plan {
+    min-width: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  .pt-float-wallet {
+    grid-template-columns: 1fr !important;
+    width: 100%;
+    min-width: 0;
+    gap: 12px !important;
+    padding: 14px !important;
+  }
+
+  .pt-balance-stack {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .pt-float-wallet .pt-float-card {
+    width: 100%;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .mobile {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 380px) {
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
   }}</style>
 </head>
 
