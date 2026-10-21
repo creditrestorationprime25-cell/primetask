@@ -786,7 +786,26 @@ img, video, iframe {
     grid-template-columns: minmax(0, 1fr);
   }
 }
-  }}</style>
+  /* PrimeTask account button layout */
+#auth-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#auth-fields > button {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+#auth-fields #pt-google-login {
+  background: #ffffff;
+  border: 1px solid #d0dcef;
+  color: #172D50;
+  }}}</style>
 </head>
 
 <body>
