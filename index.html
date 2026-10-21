@@ -610,6 +610,53 @@ body {
   .pt-float-card {
     animation: none;
   }
+  /* PrimeTask wallet layout correction */
+.pt-float-wallet {
+  display: grid !important;
+  grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr) !important;
+  align-items: center !important;
+  gap: 16px !important;
+  padding: 20px !important;
+  margin: 0 0 20px !important;
+  border: 1px solid #fff !important;
+  border-radius: 26px !important;
+  background: linear-gradient(135deg, #fffdf8, #eaf2ff, #fff5e7) !important;
+  box-shadow: 0 14px 35px #23365312 !important;
+}
+
+.pt-balance-stack {
+  display: grid !important;
+  gap: 13px !important;
+}
+
+.pt-float-wallet .pt-float-card {
+  display: block !important;
+  padding: 16px !important;
+  border: 1px solid #ffffffed !important;
+  border-radius: 19px !important;
+  background: linear-gradient(120deg, #fff, #e4efff) !important;
+  box-shadow: 0 10px 22px #29456c18 !important;
+}
+
+.pt-float-wallet .pt-float-card small,
+.pt-float-wallet .pt-float-card strong {
+  display: block !important;
+}
+
+@media (max-width: 520px) {
+  .pt-float-wallet {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .pt-float-wallet .pt-hourglass {
+    min-height: 100px !important;
+  }
+
+  .pt-float-wallet .pt-hourglass span {
+    font-size: 65px !important;
+  }
+}
   }}</style>
 </head>
 
