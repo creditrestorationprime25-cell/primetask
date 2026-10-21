@@ -223,7 +223,151 @@ footer { color:var(--muted); font-size:12px; padding:10px 0 28px; }
     font-size:11px;
   }
 }
-</style>
+/* PrimeTask Modern Cream Theme */
+:root {
+  --navy: #233653;
+  --blue: #3478F6;
+  --cream: #F8F4EC;
+  --white: #FFFFFF;
+  --soft: #EAF0FA;
+  --muted: #788398;
+  --line: #E7E1D7;
+  --green: #16845B;
+}
+
+body {
+  background: linear-gradient(135deg, #F8F4EC, #EAF1FF, #FFF9F0);
+  color: var(--navy);
+}
+
+.side {
+  background: rgba(255,255,255,.85);
+  backdrop-filter: blur(18px);
+}
+
+.logo {
+  background: linear-gradient(135deg, #3478F6, #8CB7FF);
+  border-radius: 12px;
+  box-shadow: 0 5px 16px rgba(52,120,246,.25);
+}
+
+.panel {
+  background: rgba(255,255,255,.78);
+  border: 1px solid rgba(255,255,255,.95);
+  border-radius: 24px;
+  box-shadow: 0 12px 35px rgba(35,54,83,.07);
+  backdrop-filter: blur(16px);
+}
+
+.hero {
+  background: linear-gradient(125deg, #FFFFFF, #E7F0FF, #FFF3E2);
+  border: 1px solid white;
+  border-radius: 26px;
+  box-shadow: 0 14px 32px rgba(35,54,83,.09);
+  padding: 28px;
+}
+
+.stat {
+  background: linear-gradient(145deg, #FFFFFF, #F0F5FF);
+  border: 1px solid white;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(35,54,83,.07);
+}
+
+.task, .plan {
+  background: linear-gradient(145deg, #FFFFFF, #FBF8F2);
+  border: 1px solid white;
+  border-radius: 20px;
+  box-shadow: 0 8px 22px rgba(35,54,83,.06);
+}
+
+.tag {
+  background: #E8F0FF;
+  color: #2866CF;
+}
+
+.btn {
+  background: linear-gradient(135deg, #3478F6, #255FD4);
+  color: white;
+  border: 0;
+  border-radius: 13px;
+  box-shadow: 0 6px 15px rgba(52,120,246,.2);
+}
+
+.btn.light {
+  background: #EDF3FF;
+  color: #2A5FC2;
+  box-shadow: none;
+}
+
+.field input,
+.field select {
+  border-radius: 13px;
+  border-color: #E1E5EC;
+}
+
+.account {
+  background: rgba(255,255,255,.9);
+  border: 1px solid white;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(35,54,83,.06);
+}
+
+.mobile {
+  background: rgba(255,255,255,.9);
+  border-top: 1px solid white;
+  box-shadow: 0 -8px 25px rgba(35,54,83,.08);
+  backdrop-filter: blur(20px);
+}
+
+.mobile button.active {
+  background: #E7F0FF;
+  color: #2364D9;
+  border-radius: 14px;
+}
+
+#wallet .stat:first-child {
+  background: linear-gradient(135deg, #FFFFFF, #DCEAFF);
+  border-color: #D3E3FF;
+}
+
+@media(max-width:780px) {
+  .main {
+    padding: 16px 12px 95px;
+  }
+
+  .hero {
+    padding: 22px 18px;
+    border-radius: 23px;
+  }
+
+  .stats {
+    gap: 8px;
+  }
+
+  .stat {
+    padding: 11px;
+  }
+
+  .stat strong {
+    font-size: 18px;
+  }
+
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .task, .plan {
+    padding: 13px;
+  }
+}
+
+@media(max-width:380px) {
+  .stats, .cards {
+    grid-template-columns: 1fr;
+  }
+  }</style>
 </head>
 
 <body>
