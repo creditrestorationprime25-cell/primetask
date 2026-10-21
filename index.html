@@ -1574,6 +1574,26 @@ if (!history) throw new Error("Wallet history element is missing from the page."
     }
   });
 
+  
+  $("pt-google-login").addEventListener("click", async () => {
+    if (!db) {
+      return authMessage("Supabase is still connecting. Please wait.");
+    }
+
+    try {
+      authMessage("Opening Google sign-in...");
+      const { error } = await db.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: window.location.origin + window.location.pathname
+        }
+      });
+
+      if (error) throw error;
+    } catch (error) {
+      authMessage("Google sign-in failed: " + errorText(error));
+    }
+  });
   $("pt-reset").addEventListener("click", async () => {
     if (!db) return authMessage("Supabase is still connecting. Wait briefly and try again.");
     const email = $("pt-email").value.trim();
