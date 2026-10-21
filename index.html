@@ -1298,12 +1298,7 @@ async function loadReferralLink() {
     const { data: code, error } =
       await db.rpc("get_my_referral_code");
 
-    if (error) {
-      throw new Error(
-        "Referral code request failed: " +
-        (error.message || JSON.stringify(error))
-      );
-    }
+    if (error) throw error;
 
     if (!code) {
       throw new Error("No referral code returned by Supabase.");
@@ -1350,6 +1345,7 @@ document.getElementById("pt-referral-copy")
 }).catch(error => {
   authMessage("PrimeTask startup failed: " + errorText(error));
 });
+  })();
 </script>
 </body>
 </html>
