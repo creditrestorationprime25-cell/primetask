@@ -580,26 +580,35 @@ body {
     </section>
 
     <section class="panel active" id="home">
-      <div class="hero">
-        <span class="tag">YOUR NEXT OPPORTUNITY</span>
-        <h2>Small tasks. Steady progress.</h2>
-        <p>Explore surveys, feedback and online task opportunities. Rewards are only added after a provider confirms completion.</p>
-        <button class="btn" data-go="tasks">Explore tasks</button>
-      </div>
-      <div class="stats">
-        <div class="stat">
-          <span class="muted">Available balance</span>
-          <strong id="pt-home-balance">$0.00</strong>
-        </div>
-        <div class="stat">
-          <span class="muted">Tasks completed</span>
-          <strong>—</strong>
-        </div>
-        <div class="stat">
-          <span class="muted">Pending rewards</span>
-          <strong>—</strong>
-        </div>
-      </div>
+      
+<div class="pt-float-wallet">
+  <div class="pt-hourglass">
+    <span aria-label="Hourglass">⌛</span>
+  </div>
+  <div class="pt-balance-stack">
+    <div class="pt-float-card">
+      <small>Available Balance</small>
+      <strong id="pt-home-balance">$0.00</strong>
+    </div>
+    <div class="pt-float-card">
+      <small>Pending Withdrawals</small>
+      <strong>View wallet</strong>
+    </div>
+    <div class="pt-float-card">
+      <small>Bonus Rewards</small>
+      <strong>View rewards</strong>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <span class="tag">YOUR NEXT OPPORTUNITY</span>
+  <h2>Small tasks. Steady progress.</h2>
+  <p>Explore surveys, feedback and online task opportunities. Rewards are only added after a provider confirms completion.</p>
+  <button class="btn" data-go="tasks">Explore tasks</button>
+</div>
+      
+    
       <div class="panel active">
         <h2>Recommended opportunities</h2>
         <p class="muted">These are examples, not live paid offers. Real opportunities appear after a verified provider is connected.</p>
