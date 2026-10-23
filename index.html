@@ -1978,7 +1978,45 @@ document.getElementById("pt-referral-copy")
     }
   });
 
-  
+  document.getElementById("pt-cpx-surveys")?.addEventListener("click", async function () {
+  const button = this;
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.textContent = "Opening CPX Research...";
+
+  try {
+    const { data, error } = await db.auth.getSession();
+    if (error) throw error;
+
+    const token = data.session?.access_token;
+    if (!token) throw new Error("Please log in first.");
+
+    const response = await fetch(
+      `${SUPABASE_URL}/functions/v1/primetask-cpx-link`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+          "apikey": SUPABASE_KEY
+        },
+        body: JSON.stringify({})
+      }
+    );
+
+    const result = await response.json();
+    if (!response.ok || !result.url) {
+      throw new Error(result.error || "Could not open CPX Research.");
+    }
+
+    window.location.href = result.url;
+  } catch (error) {
+    console.error("CPX link error:", error);
+    alert(error.message || "Could not open CPX Research.");
+    button.disabled = false;
+    button.textContent = originalText;
+  }
+});
   start().then(() => {
   loadReferralLink();
 }).catch(error => {
